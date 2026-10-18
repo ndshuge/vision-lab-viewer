@@ -1,0 +1,1 @@
+Encrypted client-side private media gallery. All media files and the manifest are encrypted with AES-256-GCM. The decryption key is NEVER committed to this repository. Access requires a secret URL fragment.

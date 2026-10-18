@@ -1,0 +1,161 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#0e1119"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src blob: data:; media-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Vision Lab · Private</title>
+<style>
+:root{color-scheme:dark;--bg:#0e1119;--surface:#171d29;--border:#343a4b;--ink:#eef3ff;--sub:#aeb8c9;--blue:#bbcdff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink)}
+.wrap{width:min(1120px,calc(100% - 28px));margin:0 auto}
+.hero{padding:32px 0 52px;border-bottom:1px solid var(--border);background:radial-gradient(circle at 85% 12%,#283856,transparent 56%),linear-gradient(135deg,#182237,#0e1119)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{font-weight:750;color:#b6c9ff;letter-spacing:.15em;font-size:12px}.chip{border:1px solid #536888;border-radius:999px;color:#b5c6e3;padding:6px 10px;font-size:11px}
+h1{font-size:clamp(38px,8vw,73px);line-height:1.04;letter-spacing:-.055em;margin:69px 0 19px;max-width:790px}
+.lead{font-size:clamp(14px,2.3vw,18px);color:var(--sub);line-height:1.7;max-width:660px}
+.counts{display:flex;gap:32px;flex-wrap:wrap;margin:26px 0 0}.counts b{font-size:27px;display:block}.counts span{font-size:12px;color:var(--sub)}
+main{padding:30px 0 70px}section{margin:18px 0 64px}h2{font-size:clamp(23px,4vw,34px);letter-spacing:-.035em;margin:0 0 8px}.section-lead{color:var(--sub);font-size:13px;line-height:1.6;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.card{min-width:0;border:1px solid var(--border);background:var(--surface);border-radius:15px;overflow:hidden}
+.card .cover{width:100%;aspect-ratio:4/4.7;object-fit:cover;display:block;background:#232b3c;cursor:pointer}
+.card.video .cover{aspect-ratio:16/9;object-fit:contain}
+.card .body{padding:16px}.card h3{font-size:16px;line-height:1.4;margin:7px 0}
+.card p{font-size:12px;line-height:1.55;color:var(--sub);margin:7px 0 12px}
+.card small{color:var(--blue);font-size:11px}.card button{font-size:12px;margin:8px 0 0}
+.btn{border:1px solid #566d93;background:#263654;color:#e8efff;border-radius:10px;padding:10px 14px;cursor:pointer;font:inherit;font-size:13px}
+.btn:focus-visible,input:focus-visible{outline:2px solid white;outline-offset:2px}
+.compare{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:14px}
+.stage{height:min(63vw,520px);position:relative;background:#273043;border-radius:12px;overflow:hidden}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.stage img.first{clip-path:inset(0 50% 0 0)}.divider{position:absolute;top:0;bottom:0;left:50%;width:2px;background:white;pointer-events:none}
+.knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;color:#111;border-radius:50%;padding:9px;pointer-events:none}
+input[type=range]{width:100%;accent-color:var(--blue);margin:20px 0 8px}.labels{display:flex;justify-content:space-between;gap:10px;color:var(--sub);font-size:12px}
+.hint{padding:15px;border-left:3px solid #647fb4;background:#1a2537;font-size:13px;line-height:1.7;color:#bccae2;margin-top:18px}
+.unlock{border:1px solid var(--border);border-radius:18px;padding:24px;background:var(--surface);margin-top:45px;max-width:640px}
+.unlock label{font-size:14px;display:block;margin-bottom:10px}
+.unlock input{width:100%;background:#101827;color:white;padding:12px;border:1px solid #52627d;border-radius:10px;font-size:15px}
+.unlock p{line-height:1.6;color:var(--sub);font-size:13px}
+.error{color:#ffaaa8!important}.hidden{display:none!important}
+#lightbox{position:fixed;inset:0;z-index:20;background:rgba(4,6,12,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px}
+#lightbox img{max-width:98vw;max-height:80vh;object-fit:contain;border-radius:5px}
+.lbcontrols{display:flex;align-items:center;justify-content:space-between;width:min(920px,100%);padding:16px;gap:16px;font-size:13px}
+#lightbox a{color:#c2d3ff}
+footer{border-top:1px solid var(--border);color:#8696b2;font-size:11px;line-height:1.8;padding:24px 0 38px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}h1{margin-top:57px}.counts{gap:20px}.stage{height:390px}.stage img{object-fit:cover}.hero{padding-bottom:38px}.card .cover{aspect-ratio:4/4.4}}
+</style></head><body>
+<header class="hero"><div class="wrap"><div class="top"><span class="brand">VISION / LAB</span><span class="chip">AES-256-GCM · 私人解锁</span></div>
+<h1>每一张作品，<br>都有迹可循。</h1>
+<p class="lead">本机 AI 图片与视频实验。用手机直观比较模型、查看画质缺陷、播放动态镜头。内容先在浏览器解密，不会把密钥交给网站服务器。</p>
+<div id="counts" class="counts hidden"></div></div></header>
+<main class="wrap">
+<div id="unlock" class="unlock"><label for="secret">使用你的私人链接解锁</label>
+<input id="secret" type="text" autocomplete="off" spellcheck="false" placeholder="粘贴私人解锁码或完整链接">
+<p>首次打开请使用包含 #k= 的完整私人网址，或在这里输入解锁码。地址和解锁码不要转发。</p>
+<button id="unlockButton" class="btn">解锁作品画廊</button><p id="state" role="status"></p></div>
+<div id="gallery" class="hidden">
+<section><h2>两套图片模型对照</h2><p class="section-lead">同一个角色主题，在 Z-Image 和 Illustrious 之间拖动比较。</p>
+<div class="compare"><div class="stage"><img id="cmp2" alt="Illustrious"><img id="cmp1" class="first" alt="Z-Image"><div id="cmpLine" class="divider"></div><div id="cmpKnob" class="knob">↔</div></div><input id="cmpSlider" type="range" min="0" max="100" value="50" aria-label="拖动比较"><div class="labels"><span>Z-Image</span><span>Illustrious XL</span></div></div></section>
+<section><h2>角色实验</h2><p class="section-lead">Illustrious XL、LoRA 和参考图的真实生成对照。</p><div class="grid" id="characters"></div><div class="hint">参考图实验采用低去噪强度，画面高度相似主要由参考图约束产生，不可全部归功于 LoRA。</div></section>
+<section><h2>AI 动态镜头</h2><p class="section-lead">点击封面后解密并播放原始 MP4。保留失败样例。</p><div class="grid" id="videos"></div></section>
+<section><h2>写实场景与角色</h2><p class="section-lead">点击图片可放大查看原图。</p><div class="grid" id="others"></div></section>
+</div></main>
+<div id="lightbox" class="hidden" role="dialog" aria-modal="true"><img id="large" alt="大图预览"><div class="lbcontrols"><span id="caption"></span><a id="download" download>保存原图 ↗</a><button id="close" class="btn">关闭</button></div></div>
+<footer><div class="wrap">Vision Lab · 本地生成成果 | 公网仅存储加密文件，持有解锁密钥者可查看。勿在此存放高敏感个人资料。</div></footer>
+<script>
+"use strict";
+const enc=new TextEncoder(), decoder=new TextDecoder();
+let secretKey, manifest;
+const blobs=new Map();
+const byId=id=>document.getElementById(id);
+function getKeyPart(){const h=new URLSearchParams(location.hash.slice(1));return h.get("k")||"";}
+async function importSecret(value){
+ let token=value.trim();
+ if(token.indexOf("#k=")>=0){token=token.split("#k=")[1].split("&")[0];}
+ if(!/^[A-Za-z0-9_-]{43}$/.test(token)){throw new Error("解锁码格式不正确。请粘贴完整私人链接。");}
+ const binary=atob(token.replace(/-/g,"+").replace(/_/g,"/")+"=");
+ const raw=Uint8Array.from(binary,c=>c.charCodeAt(0));
+ if(raw.byteLength!==32)throw new Error("密钥长度错误");
+ return crypto.subtle.importKey("raw",raw,"AES-GCM",false,["decrypt"]);
+}
+async function decryptBytes(path){
+ const r=await fetch(path,{cache:"no-store"});
+ if(!r.ok)throw new Error("文件加载失败："+r.status);
+ const bytes=new Uint8Array(await r.arrayBuffer());
+ if(bytes.length<29)throw new Error("文件过短");
+ const iv=bytes.slice(0,12),body=bytes.slice(12);
+ return crypto.subtle.decrypt({name:"AES-GCM",iv:iv,additionalData:enc.encode(path.split("/").pop()),tagLength:128},secretKey,body);
+}
+async function urlFor(path,type){
+ if(blobs.has(path))return blobs.get(path);
+ const p=decryptBytes(path).then(buf=>URL.createObjectURL(new Blob([buf],{type:type}))).catch(e=>{blobs.delete(path);throw e;});
+ blobs.set(path,p);
+ return p;
+}
+function elem(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
+async function openImage(obj){
+ try{
+  const link=await urlFor(obj.src,"image/png");
+  byId("large").src=link;
+  byId("caption").textContent=obj.title;
+  byId("download").href=link;
+  byId("download").download=obj.title+".png";
+  byId("lightbox").classList.remove("hidden");
+  document.body.style.overflow="hidden";
+ }catch(e){alert("原图加载失败："+e.message);}
+}
+function addImage(container,obj){
+ const article=elem("article","card");const im=elem("img","cover");im.alt=obj.title;im.loading="lazy";
+ im.addEventListener("click",()=>openImage(obj));article.append(im);
+ const body=elem("div","body");body.append(elem("small","",obj.model));body.append(elem("h3","",obj.title));
+ body.append(elem("p","",obj.note));
+ const btn=elem("button","btn","查看原图");btn.addEventListener("click",()=>openImage(obj));body.append(btn);article.append(body);
+ container.append(article);
+ urlFor(obj.thumb,"image/webp").then(u=>im.src=u).catch(()=>im.alt="预览解密失败");
+}
+function addVideo(container,obj){
+ const article=elem("article","card video");const cover=elem("img","cover");cover.alt=obj.title;cover.loading="lazy";
+ article.append(cover);
+ const body=elem("div","body");body.append(elem("small","",obj.spec));body.append(elem("h3","",obj.title));
+ body.append(elem("p","",obj.note));
+ const btn=elem("button","btn","解密并播放");
+ const play=async()=>{
+  btn.disabled=true;btn.textContent="正在解密视频…";
+  try{
+   const url=await urlFor(obj.src,"video/mp4");
+   const video=elem("video","cover");video.controls=true;video.playsInline=true;video.preload="metadata";video.src=url;
+   cover.replaceWith(video);btn.textContent="播放 / 暂停";
+   btn.disabled=false;
+   btn.onclick=()=>{if(video.paused)video.play();else video.pause();};
+   video.play().catch(()=>{});
+  }catch(e){btn.disabled=false;btn.textContent="重试播放";alert("视频加载失败："+e.message);}
+ };
+ btn.onclick=play;cover.onclick=play;
+ body.append(btn);article.append(body);container.append(article);
+ urlFor(obj.poster,"image/webp").then(u=>cover.src=u).catch(()=>cover.alt="视频封面解密失败");
+}
+async function render(){
+ byId("unlock").classList.add("hidden");
+ byId("gallery").classList.remove("hidden");
+ byId("counts").classList.remove("hidden");
+ const pairs=[["03","已部署模型"],[String(manifest.images.length).padStart(2,"0"),"生成图片"],[String(manifest.videos.length).padStart(2,"0"),"视频样片"]];
+ pairs.forEach(([v,t])=>{let d=elem("div");d.append(elem("b","",v));d.append(elem("span","",t));byId("counts").append(d);});
+ manifest.images.slice(3).forEach(x=>addImage(byId("characters"),x));
+ manifest.images.slice(0,3).forEach(x=>addImage(byId("others"),x));
+ manifest.videos.forEach(x=>addVideo(byId("videos"),x));
+ const [l,r]=await Promise.all([urlFor(manifest.images[1].src,"image/png"),urlFor(manifest.images[2].src,"image/png")]);
+ byId("cmp1").src=l;byId("cmp2").src=r;
+}
+async function unlock(value){
+ byId("state").textContent="正在验证并解密…";byId("unlockButton").disabled=true;
+ try{
+  secretKey=await importSecret(value);
+  manifest=JSON.parse(decoder.decode(await decryptBytes("m.bin")));
+  await render();
+  byId("state").textContent="";
+ }catch(e){byId("state").textContent="无法解锁：请检查完整私人链接或解锁码。";byId("state").classList.add("error");byId("unlockButton").disabled=false;}
+}
+const slider=byId("cmpSlider");
+slider.addEventListener("input",()=>{const v=Number(slider.value);byId("cmp1").style.clipPath="inset(0 "+(100-v)+"% 0 0)";byId("cmpLine").style.left=v+"%";byId("cmpKnob").style.left=v+"%";});
+byId("close").addEventListener("click",()=>{byId("lightbox").classList.add("hidden");document.body.style.overflow="";});
+byId("lightbox").addEventListener("click",e=>{if(e.target.id==="lightbox")byId("close").click();});
+byId("unlockButton").addEventListener("click",()=>unlock(byId("secret").value));
+byId("secret").addEventListener("keydown",e=>{if(e.key==="Enter")unlock(byId("secret").value);});
+const fromLink=getKeyPart();
+if(fromLink){byId("secret").value=fromLink;unlock(fromLink);}
+</script></body></html>
