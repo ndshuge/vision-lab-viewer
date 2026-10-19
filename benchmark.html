@@ -1,130 +1,165 @@
-<!doctype html><html lang="zh-CN">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#0d121b">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src blob: data:; media-src blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
-<title>Vision Lab · Benchmark V1</title>
-<style>
-:root{color-scheme:dark;--bg:#0d121b;--card:#1a2230;--sub:#abb9d1;--text:#f2f5ff;--border:#394354;--accent:#bcd0ff;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI","Microsoft Yahei",sans-serif}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-size:14px}button,input,select{font:inherit}
-.shell{max-width:1200px;margin:0 auto;padding:0 16px}header{background:radial-gradient(circle at 85% 10%,#344260,transparent 65%),linear-gradient(150deg,#182337,#0d121b);padding:24px 0 45px;border-bottom:1px solid var(--border)}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:15px;color:#c5d5fa;font-size:12px}
-.brand{font-weight:700;letter-spacing:.14em}.nav a{color:#c5d5fa;text-decoration:none}
-h1{font-size:clamp(32px,6vw,64px);letter-spacing:-.05em;line-height:1.12;margin:48px 0 16px}
-p{line-height:1.65;color:var(--sub)}.lead{font-size:15px;max-width:640px}
-.stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:22px}.stats strong{font-size:26px;display:block}.stats span{font-size:11px;color:var(--sub)}
-main{padding:27px 16px 70px}section{margin:32px 0 55px}h2{font-size:25px;letter-spacing:-.025em;margin:0 0 8px}
-.field{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0}.field select{background:#1d2a3d;color:white;border:1px solid #596680;border-radius:9px;padding:10px}
-button{cursor:pointer;border-radius:9px;padding:9px 12px;border:1px solid #677a9e;background:#273b59;color:#f5f7ff}
-button:hover{background:#334e73}button:disabled{opacity:.5}
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline';connect-src 'self';img-src blob: data:;media-src blob:;object-src 'none';form-action 'none';base-uri 'none'">
+<title>Vision Lab · Benchmark V1</title><style>
+:root{color-scheme:dark;--bg:#10141e;--panel:#1c2331;--line:#343d50;--ink:#eaf0fc;--sub:#acbbd1;--accent:#b5c8ff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}.wrap{width:min(1150px,calc(100% - 28px));margin:auto}
+header{padding:22px 0 34px;background:radial-gradient(circle at 100% 0%,#304260,transparent 55%),#171e2b;border-bottom:1px solid var(--line)}
+a{color:var(--accent)}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;letter-spacing:.06em}
+h1{font-size:clamp(34px,7vw,60px);letter-spacing:-.045em;line-height:1.1;margin:44px 0 15px}
+header p{color:var(--sub);line-height:1.75;font-size:14px;margin:0;max-width:740px}
+.metrics{display:flex;gap:26px;flex-wrap:wrap;margin-top:25px}.metrics b{display:block;font-size:25px}.metrics small{color:var(--sub)}
+main{padding:30px 0 65px}.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:15px}
+button,select,textarea,input{font:inherit;color:var(--ink)}.btn{background:#263755;border:1px solid #4e638a;border-radius:9px;padding:10px 13px;font-size:13px;cursor:pointer}.btn.active{background:#a7bfff;color:#122039}
+.notice{color:var(--sub);font-size:13px;line-height:1.7;padding:12px 15px;background:#1b2537;border-left:3px solid #6a85bb;margin:20px 0}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;min-width:0}
-.card img,.card video{width:100%;aspect-ratio:3/4;object-fit:cover;background:#263349;display:block}
-.card.video img,.card.video video{aspect-ratio:16/9;object-fit:contain}
-.body{padding:15px}.body .type{font-size:11px;color:var(--accent);line-height:1.6}.body h3{font-size:15px;line-height:1.35;margin:8px 0}
-.body p{font-size:12px;margin:7px 0 12px}.buttons{display:flex;flex-wrap:wrap;gap:8px}
-.rating{display:grid;grid-template-columns:1fr auto;gap:9px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);align-items:center}
-.rating label{font-size:12px;color:#d4dced}.rating select{width:104px;min-height:35px;border-radius:8px;background:#121c2d;color:white;border:1px solid #4d6083}
-.note{border-left:3px solid #6b89c4;background:#1b2a40;padding:12px 17px;margin:16px 0;font-size:12px;line-height:1.7;color:#c1cde1}
-#unlock{max-width:650px;margin:60px auto;background:var(--card);padding:25px;border:1px solid var(--border);border-radius:18px}
-#unlock input{padding:12px;background:#0d1626;border:1px solid #567095;border-radius:8px;width:100%;color:white;margin:10px 0}
-.hidden{display:none!important}.error{color:#ffaaa8}
-#overlay{position:fixed;inset:0;z-index:10;background:#06080cee;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px}
-#overlay img{max-height:83vh;max-width:100%;object-fit:contain}
-.ovtools{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px;width:min(920px,100%);font-size:13px}
-.ovtools a{color:#c4d6ff}.empty{color:var(--sub);padding:30px;border:1px dashed var(--border);border-radius:12px}
-footer{border-top:1px solid var(--border);padding:26px 0;color:var(--sub);font-size:11px}
-@media(max-width:950px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:570px){.grid{grid-template-columns:1fr}.card img{aspect-ratio:4/4.8}.field select{flex:1 1 44%}}
-</style></head><body>
-<header><div class="shell"><div class="nav"><div class="brand">VISION / LAB</div><a id="home" href="./">← 作品首页</a></div>
-<h1>让每一次生成<br>都有证据。</h1><p class="lead">标准化实验 V1：同一角色的 LoRA × 参考图因子实验，以及动作视频压力测试。评价由你完成，数字不会伪装成客观画质评分。</p>
-<div id="stats" class="stats"></div></div></header>
-<main class="shell">
-<div id="unlock"><h2>私人评测资料</h2><p>使用你的私人链接在浏览器本地解密图片、视频与实验数据。密钥不会发送到服务器。</p>
-<input id="key" placeholder="完整私人链接或解锁码" autocomplete="off" spellcheck="false">
-<button id="unlockBtn">解锁实验</button><p id="error" role="status"></p></div>
-<div id="content" class="hidden">
-<div class="note">技术成功仅指文件与流程完整，角色准确性、动作遵循和视觉质量需要单独评价。手动评分仅保存在当前手机浏览器中，可以导出 JSON；没有上传评分的服务器。</div>
-<div class="field"><button id="export">导出评分 JSON</button><span id="rated"></span></div>
-<section>
-<h2>角色图片 · 2×2 因子实验</h2><p>24 张：LoRA 开关 × 参考图开关 × 人像/跑步两种提示 × 3 种随机种子。</p>
-<div class="field"><select id="pose"><option value="all">所有姿势</option><option value="portrait">人像</option><option value="action">跑步</option></select>
-<select id="lora"><option value="all">全部 LoRA</option><option value="true">启用 LoRA</option><option value="false">未启用 LoRA</option></select>
-<select id="reference"><option value="all">全部参考图</option><option value="true">使用参考图</option><option value="false">无参考图</option></select></div>
-<div id="imageGrid" class="grid"></div></section>
-<section><h2>动作视频 · 4 类动作</h2><p>眨眼、挥手、跑步、镜头推进，每种 2 个种子。点击封面解密 MP4，评分应结合真实动作而非封面。</p>
-<div id="videoGrid" class="grid"></div></section>
-</div>
-</main><div id="overlay" class="hidden" role="dialog" aria-modal="true"><img id="large" alt="全尺寸预览"><div class="ovtools"><span id="ovtitle"></span><a id="save" download>保存原图</a><button id="close">关闭</button></div></div>
-<footer><div class="shell">本地实验的加密备份。原图和 MP4 只在客户端解密。评分保存在本设备，清除浏览器网站数据可能丢失评分。</div></footer>
+.card{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cover{display:block;width:100%;aspect-ratio:4/4.8;object-fit:cover;background:#273144;cursor:pointer}
+.card.video .cover{aspect-ratio:16/9;object-fit:contain}
+.detail{padding:13px 15px 16px}.detail h3{font-size:15px;line-height:1.4;margin:4px 0 8px}.detail p{font-size:12px;color:var(--sub);line-height:1.45;margin:6px 0}
+.badge{color:var(--accent);font-size:11px}.secret{font-size:11px;color:#aab8d4;background:#27344a;padding:9px;border-radius:8px;line-height:1.65;margin-top:10px}
+.rating{border-top:1px solid #384455;margin-top:12px;padding-top:12px}
+.rating-row{display:grid;grid-template-columns:1fr 85px;gap:8px;align-items:center;margin:8px 0;font-size:12px}
+.rating select{background:#162132;border:1px solid #53647d;border-radius:8px;padding:6px 9px}
+.rating textarea{resize:vertical;width:100%;min-height:55px;margin-top:7px;border-radius:8px;padding:8px;background:#131b2a;border:1px solid #53647d;font-size:12px}
+.saved{font-size:11px;color:#8bc5a2;min-height:15px}.loading{padding:16px;color:var(--sub)}
+#viewer{position:fixed;inset:0;background:#06090feb;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:5;padding:10px}
+#viewer img{max-height:83vh;max-width:98vw;object-fit:contain}#viewer .bar{display:flex;align-items:center;justify-content:space-between;gap:15px;width:min(850px,100%);padding:12px}
+.hidden{display:none!important}#unlock{max-width:570px;margin:45px 0;background:var(--panel);border:1px solid var(--line);padding:22px;border-radius:13px}
+#unlock input{width:100%;margin:10px 0;padding:11px;border-radius:8px;border:1px solid #53647d;background:#141c2b}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.grid{grid-template-columns:1fr}.cover{aspect-ratio:4/4.25}h1{margin-top:35px}.controls{gap:7px}.btn{font-size:12px}}
+</style></head><body><header><div class="wrap"><div class="top"><a id="back" href="./">← Vision Lab</a><span>BENCHMARK / V1</span></div>
+<h1>给 AI 作品<br>做一次真正的考试。</h1>
+<p>固定种子与参数，独立评价角色一致性、动作完成度、视觉质量。默认隐藏实验条件，尽量避免先入为主。评分在你的手机浏览器本地保存。</p>
+<div class="metrics"><div><b id="planned">32</b><small>计划样本</small></div><div><b id="produced">—</b><small>已完成生成</small></div><div><b id="rated">0</b><small>已评分</small></div></div></div></header>
+<main class="wrap">
+<div id="unlock"><b>私人实验室</b><p>请使用包含 #k= 的完整私人链接。</p><input id="secret" placeholder="粘贴私人解锁码"><button class="btn" id="open">解锁评测</button><p id="error" style="color:#ffaaaa"></p></div>
+<div id="app" class="hidden"><div class="controls"><button class="btn active" id="all">全部</button><button class="btn" id="images">图片</button><button class="btn" id="videos">视频</button><button class="btn" id="reveal">显示实验条件</button><button class="btn" id="copy">复制评分</button><button class="btn" id="export">导出评分 JSON</button></div>
+<div class="notice">请先看图或播放视频，再评分。图片评分：角色还原、姿态遵循、整体质量；视频评分：动作遵循、时间一致性、整体质量。1＝很差，5＝很好。未看过的可以留空。</div>
+<div id="cards" class="grid"></div></div></main>
+<div id="viewer" class="hidden"><img id="large" alt="大图"><div class="bar"><span id="vlabel"></span><button id="close" class="btn">关闭</button></div></div>
 <script>
-const $$=id=>document.getElementById(id),encoder=new TextEncoder(),decoder=new TextDecoder();
-let cryptoKey,dataset,ratings={};const cache=new Map();const storageKey="visionlab-benchmark-v1-ratings";
-function getToken(){return new URLSearchParams(location.hash.slice(1)).get("k")||"";}
-function text(tag,value,klass){const e=document.createElement(tag);e.textContent=value;if(klass)e.className=klass;return e;}
-async function importSecret(value){let token=value.trim();if(token.includes("#k="))token=token.split("#k=")[1].split("&")[0];
-if(!/^[A-Za-z0-9_-]{43}$/.test(token))throw new Error("密钥格式不正确");
-const bytes=Uint8Array.from(atob(token.replace(/-/g,"+").replace(/_/g,"/")+"="),c=>c.charCodeAt(0));
-return crypto.subtle.importKey("raw",bytes,"AES-GCM",false,["decrypt"]);}
-async function decrypt(path){const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw new Error("读取失败："+response.status);
-const raw=new Uint8Array(await response.arrayBuffer());return crypto.subtle.decrypt({name:"AES-GCM",iv:raw.slice(0,12),
-additionalData:encoder.encode(path.split("/").pop()),tagLength:128},cryptoKey,raw.slice(12));}
-function blob(path,mime){if(cache.has(path))return cache.get(path);const promise=decrypt(path).then(raw=>URL.createObjectURL(new Blob([raw],{type:mime})));
-cache.set(path,promise);promise.catch(()=>cache.delete(path));return promise;}
-function updateRatings(){let x=0;for(const r of Object.values(ratings))if(Object.values(r).some(n=>Number(n)>0))x++;$$("rated").textContent="已评分 "+x+" 个样本";}
-function rate(id,metric,num){if(!ratings[id])ratings[id]={};ratings[id][metric]=Number(num);try{localStorage.setItem(storageKey,JSON.stringify(ratings));}catch(e){}updateRatings();}
-function makeRatings(card,spec){
-const box=text("div","","rating");
-const fields=spec.kind==="image"?["角色特征","姿势准确","整体画质"]:["动作遵循","时序稳定","画面质量"];
-fields.forEach((title,i)=>{const label=text("label",title);const sel=document.createElement("select");sel.setAttribute("aria-label",title);
-[["0","未评分"],["1","1 / 5"],["2","2 / 5"],["3","3 / 5"],["4","4 / 5"],["5","5 / 5"]].forEach(([v,l])=>{const opt=document.createElement("option");opt.value=v;opt.textContent=l;sel.append(opt);});
-sel.value=String(ratings[spec.id]?.[title]||"0");sel.onchange=()=>rate(spec.id,title,sel.value);
-box.append(label,sel);});card.append(box);}
-async function largeImage(spec){try{const src=await blob(spec.src,"image/png");$$("large").src=src;
-$$("save").href=src;$$("save").download=spec.id+".png";$$("ovtitle").textContent=spec.id;$$("overlay").classList.remove("hidden");
-document.body.style.overflow="hidden";}catch(e){alert("无法读取原图："+e.message);}}
-function makeImage(spec){
-const card=text("article","","card"),img=text("img","","cover");img.loading="lazy";img.alt=spec.id;img.onclick=()=>largeImage(spec);card.append(img);
-const body=text("div","","body");body.append(text("small","LOra "+(spec.lora?"有":"无")+" / 参考图 "+(spec.reference?"有":"无")+" / seed "+spec.seed,"type"));
-body.append(text("h3",(spec.pose==="portrait"?"人像":"跑步")+" · "+spec.id));body.append(text("p",spec.status==="passed"?"流程已通过；等待主观评分":"任务失败："+(spec.error||"未知")));
-if(spec.src){const btn=text("button","查看原图");btn.onclick=()=>largeImage(spec);body.append(btn);
-blob(spec.preview,"image/webp").then(src=>img.src=src).catch(()=>img.alt="解密失败");}
-makeRatings(body,spec);card.append(body);return card;}
-function makeVideo(spec){
-const card=text("article","","card video"),img=text("img","","cover");img.loading="lazy";img.alt=spec.id;card.append(img);
-const body=text("div","","body");body.append(text("small","Wan 2.2 · 832×480 · 49 帧","type"));
-const name={"blink":"眨眼","wave":"挥手","run":"奔跑","push":"镜头推进"}[spec.action]||spec.action;
-body.append(text("h3",name+" · "+spec.seed));
-body.append(text("p",spec.status==="passed"?"已导出 MP4 · "+Math.round(spec.seconds||0)+"秒":"生成失败："+(spec.error||"未知")));
-if(spec.src){
- const btn=text("button","解密并播放");const play=async()=>{btn.disabled=true;btn.textContent="正在解密视频…";
- try{const src=await blob(spec.src,"video/mp4"),player=document.createElement("video");player.src=src;player.controls=true;player.playsInline=true;player.preload="metadata";player.className="cover";img.replaceWith(player);btn.textContent="播放 / 暂停";btn.disabled=false;btn.onclick=()=>player.paused?player.play():player.pause();player.play().catch(()=>{});}
- catch(e){btn.textContent="重试";btn.disabled=false;alert("视频解密失败："+e.message);}};
- img.onclick=play;btn.onclick=play;body.append(btn);
- blob(spec.preview,"image/webp").then(src=>img.src=src).catch(()=>{});
+"use strict";
+const $=x=>document.getElementById(x),encode=new TextEncoder(),decode=new TextDecoder();
+let key,manifest,mode="all",revealed=false;const cache=new Map(),ratings={};
+const storage="vision-bench-v1-ratings";
+try{Object.assign(ratings,JSON.parse(localStorage.getItem(storage)||"{}"));}catch(e){}
+function kFromFragment(){return new URLSearchParams(location.hash.slice(1)).get("k")||"";}
+async function importKey(s){
+ s=s.trim();if(s.includes("#k="))s=s.split("#k=")[1].split("&")[0];
+ if(!/^[A-Za-z0-9_-]{43}$/.test(s))throw Error("解锁码格式不正确");
+ const bin=atob(s.replace(/-/g,"+").replace(/_/g,"/")+"=");
+ return crypto.subtle.importKey("raw",Uint8Array.from(bin,c=>c.charCodeAt(0)),"AES-GCM",false,["decrypt"]);
 }
-makeRatings(body,spec);card.append(body);return card;}
-function drawImages(){
-const grid=$$("imageGrid");grid.replaceChildren();
-const pose=$$("pose").value,lora=$$("lora").value,ref=$$("reference").value;
-const subset=dataset.images.filter(x=>(pose==="all"||x.pose===pose)&&(lora==="all"||String(x.lora)===lora)&&(ref==="all"||String(x.reference)===ref));
-subset.forEach(x=>grid.append(makeImage(x)));
-if(!subset.length)grid.append(text("p","没有符合筛选条件的图片","empty"));
+async function decrypt(path){
+ const r=await fetch(path,{cache:"no-cache"});if(!r.ok)throw Error("加载错误: "+r.status);
+ const data=new Uint8Array(await r.arrayBuffer());
+ return crypto.subtle.decrypt({name:"AES-GCM",iv:data.slice(0,12),additionalData:encode.encode(path.split("/").pop()),tagLength:128},key,data.slice(12));
 }
-async function unlock(token){$$("unlockBtn").disabled=true;$$("error").textContent="正在解密实验…";
-try{cryptoKey=await importSecret(token);dataset=JSON.parse(decoder.decode(await decrypt("b.bin")));
-try{ratings=JSON.parse(localStorage.getItem(storageKey)||"{}");}catch(e){ratings={};}
-$$("home").href="./"+location.hash;
-$$("unlock").classList.add("hidden");$$("content").classList.remove("hidden");
-const stats=dataset.counts;[["24", "图片计划"],[String(stats.image_passed||0),"图片生成完成"],["8","视频计划"],[String(stats.video_passed||0),"视频生成完成"]].forEach(([v,t])=>{
-const div=document.createElement("div");div.append(text("strong",v),text("span",t));$$("stats").append(div);});
-drawImages();dataset.videos.forEach(x=>$$("videoGrid").append(makeVideo(x)));updateRatings();
-}catch(e){$$("error").textContent="解锁失败，请检查链接或网络。";$$("error").className="error";$$("unlockBtn").disabled=false;}}
-$$("unlockBtn").onclick=()=>unlock($$("key").value);$$("key").onkeydown=e=>{if(e.key==="Enter")unlock(e.target.value);};
-["pose","lora","reference"].forEach(x=>$$(x).onchange=drawImages);
-$$("close").onclick=()=>{$$("overlay").classList.add("hidden");document.body.style.overflow="";};
-$$("export").onclick=()=>{const contents=JSON.stringify({project:"Vision Lab",version:"v1",exportedAt:new Date().toISOString(),ratings},null,2);
-const href=URL.createObjectURL(new Blob([contents],{type:"application/json"})),a=document.createElement("a");a.href=href;a.download="vision-lab-ratings-v1.json";a.click();setTimeout(()=>URL.revokeObjectURL(href),5000);};
-const k=getToken();if(k){$$("key").value=k;unlock(k);}
+async function media(path,type){
+ if(cache.has(path))return cache.get(path);
+ const promise=decrypt(path).then(buf=>URL.createObjectURL(new Blob([buf],{type}))).catch(e=>{cache.delete(path);throw e;});
+ cache.set(path,promise);return promise;
+}
+function el(tag,cls,value){let e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=value;return e;}
+function save(){try{localStorage.setItem(storage,JSON.stringify(ratings));}catch(e){}updateCounts();}
+function updateCounts(){$("rated").textContent=Object.values(ratings).filter(r=>r&&Object.values(r.scores||{}).some(x=>Number(x)>0)).length;}
+function ratingExport(){return {version:"vision-benchmark-v1",timestamp:new Date().toISOString(),ratings:Object.entries(ratings).map(([id,v])=>({id,...v}))};}
+function getRank(id){if(!ratings[id])ratings[id]={scores:{},note:""};return ratings[id];}
+function mediaLazy(node,path,type){
+ const observer=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting){observer.disconnect();media(path,type).then(url=>node.src=url).catch(()=>node.alt="加载失败");}
+ },{rootMargin:"230px"});
+ observer.observe(node);
+}
+async function zoom(item){
+ try{const src=await media(item.media,"image/png");$("large").src=src;$("vlabel").textContent="样本 "+item.id;$("viewer").classList.remove("hidden");}
+ catch(e){alert("图片解密失败："+e.message);}
+}
+function scoreRow(item,name,label){
+ const row=el("div","rating-row");row.append(el("span","",label));
+ const select=el("select");select.setAttribute("aria-label",label);
+ [["","未评分"],["1","1 · 差"],["2","2"],["3","3 · 中"],["4","4"],["5","5 · 好"]].forEach(([v,t])=>{
+  let option=el("option","",t);option.value=v;select.append(option);
+ });
+ select.value=String(getRank(item.id).scores[name]||"");
+ select.addEventListener("change",()=>{const r=getRank(item.id);if(select.value)r.scores[name]=Number(select.value);else delete r.scores[name];save();});
+ row.append(select);return row;
+}
+function card(item){
+ const article=el("article","card "+item.kind);
+ let mediaBox;
+ if(item.status==="passed"){
+   mediaBox=el("img","cover");mediaBox.alt=item.id;mediaBox.loading="lazy";
+   mediaLazy(mediaBox,item.thumb,"image/webp");
+   if(item.kind==="image")mediaBox.onclick=()=>zoom(item);
+   else mediaBox.onclick=()=>play(item,mediaBox,article);
+ }else{mediaBox=el("div","loading","该项运行失败 / 尚未生成，请查看状态");}
+ article.append(mediaBox);
+ const body=el("div","detail");
+ body.append(el("small","badge",item.kind==="image"?"图片 · 768×1024":"视频 · 832×480"));
+ body.append(el("h3","",item.kind==="image"?(item.pose==="action"?"动态姿态":"站姿肖像")+" · 样本 "+item.id.slice(-2):({blink:"眨眼",wave:"挥手",run:"奔跑",push:"运镜推进"}[item.action]||"视频")+" · "+item.id.slice(-2)));
+ body.append(el("p","",item.status==="passed"?"真实生成 "+item.seconds+" 秒":"状态："+item.status+(item.error?" / "+item.error.slice(0,90):"")));
+ let info=el("div","secret "+(revealed?"":"hidden"),
+      item.kind==="image"?"LoRA："+(item.lora?"有":"无")+"；参考图："+(item.reference?"有":"无")+"；种子："+item.seed
+                         :"动作："+item.action+"；种子："+item.seed);
+ body.append(info);
+ if(item.status==="passed"){
+   if(item.kind==="video"){
+    const btn=el("button","btn","解密并播放视频");btn.addEventListener("click",()=>play(item,mediaBox,article));
+    body.append(btn);
+   }
+   const box=el("div","rating");
+   if(item.kind==="image"){
+    box.append(scoreRow(item,"identity","角色还原度"));
+    box.append(scoreRow(item,"pose","姿态遵循度"));
+    box.append(scoreRow(item,"visual","整体视觉质量"));
+   }else{
+    box.append(scoreRow(item,"motion","动作完成度"));
+    box.append(scoreRow(item,"temporal","时序一致性"));
+    box.append(scoreRow(item,"visual","整体视觉质量"));
+   }
+   const note=el("textarea");note.placeholder="变形、错误、值得保留的细节…";note.value=getRank(item.id).note||"";
+   note.addEventListener("input",()=>{getRank(item.id).note=note.value;save();});
+   box.append(note);body.append(box);
+ }
+ article.append(body);return article;
+}
+async function play(item,img,article){
+ const btn=article.querySelector("button");if(btn)btn.textContent="正在解密视频…";
+ try{
+  const u=await media(item.media,"video/mp4");
+  let video=article.querySelector("video");
+  if(!video){video=el("video","cover");video.controls=true;video.playsInline=true;video.preload="metadata";video.src=u;img.replaceWith(video);}
+  video.play().catch(()=>{});if(btn)btn.textContent="播放视频";
+ }catch(e){alert("视频解密失败："+e.message);if(btn)btn.textContent="重试";}
+}
+function render(){
+ const items=manifest.items.filter(i=>mode==="all"||i.kind===(mode==="images"?"image":"video"));
+ // Stable hidden evaluation ordering; display order independent of LoRA/ref factors.
+ items.sort((a,b)=>a.blind_order-b.blind_order);
+ $("cards").replaceChildren(...items.map(card));
+ $("reveal").textContent=revealed?"隐藏实验条件":"显示实验条件";
+ for(const id of ["all","images","videos"])$(id).classList.toggle("active",id===mode);
+ updateCounts();
+}
+async function unlock(token){
+ try{
+  $("error").textContent="正在解锁…";key=await importKey(token);
+  manifest=JSON.parse(decode.decode(await decrypt("bench.bin")));
+  $("unlock").classList.add("hidden");$("app").classList.remove("hidden");
+  $("produced").textContent=manifest.items.filter(i=>i.status==="passed").length;
+  $("back").href="./"+location.hash;
+  render();
+ }catch(e){$("error").textContent="无法解锁，请使用完整私人链接。";}
+}
+$("open").onclick=()=>unlock($("secret").value);
+$("secret").onkeydown=e=>{if(e.key==="Enter")unlock($("secret").value);};
+for(const type of ["all","images","videos"])$(type).onclick=()=>{mode=type;render();};
+$("reveal").onclick=()=>{revealed=!revealed;render();};
+$("close").onclick=()=>{$("viewer").classList.add("hidden");$("large").src="";};
+$("copy").onclick=()=>navigator.clipboard.writeText(JSON.stringify(ratingExport(),null,2)).then(()=>alert("评分已复制，粘贴回 ChatGPT 即可")).catch(()=>alert("复制失败，请使用导出 JSON"));
+$("export").onclick=()=>{let u=URL.createObjectURL(new Blob([JSON.stringify(ratingExport(),null,2)],{type:"application/json"}));let a=el("a");a.href=u;a.download="vision-benchmark-v1-ratings.json";a.click();setTimeout(()=>URL.revokeObjectURL(u),5000);};
+let fragment=kFromFragment();if(fragment){$("secret").value=fragment;unlock(fragment);}
 </script></body></html>
