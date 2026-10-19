@@ -1,0 +1,119 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none';connect-src 'self';img-src blob: data:;script-src 'unsafe-inline';style-src 'unsafe-inline';base-uri 'none';form-action 'none';object-src 'none'">
+<title>Jerry V3 · 真正的本地文字生图</title><style>
+:root{font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color-scheme:dark;--bg:#0d161f;--panel:#162536;--border:#334c61;--txt:#eef3fa;--sub:#bbc8d6;--blue:#a6cafa;--good:#a7e1bf}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt)}
+main,.constrain{width:min(1180px,calc(100% - 32px));margin:auto}
+a{color:var(--blue)}button{cursor:pointer}button,select,input{font:inherit}
+header{padding:29px 0 37px;border-bottom:1px solid var(--border);background:radial-gradient(ellipse at 75% -40%,#4a698a 0%,#203447 40%,#0e1a26 90%)}
+.eyebrow{font-size:10px;letter-spacing:.2em;font-weight:800;color:#a8cbfd}
+h1{font-size:clamp(38px,7vw,66px);margin:47px 0 13px;line-height:1.08;letter-spacing:-.06em}
+h1 em{font-style:normal;color:#add0ff}
+.lede{color:#c5d5e6;font-size:14px;line-height:1.8;max-width:720px;margin:0}
+.stats{display:flex;gap:30px;flex-wrap:wrap;margin-top:26px;font-size:12px;color:var(--sub)}
+.stats strong{display:block;color:white;font-size:29px;font-variant-numeric:tabular-nums}
+main{padding:25px 0 50px}
+#gate,.intro,.panel,.closing{padding:18px;background:var(--panel);border:1px solid var(--border);border-radius:16px;margin-bottom:20px}
+#gate{max-width:620px}.hidden{display:none!important}
+.small{font-size:12px;line-height:1.8;color:var(--sub)}#error{color:#ffacac;font-size:12px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+input{flex:1;min-width:220px;padding:12px;border:1px solid #68809e;border-radius:9px;background:#0c1a2a;color:white}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;background:#355779;color:#fff;border:1px solid #6382a8;border-radius:9px;text-decoration:none;font-size:12px}
+.btn:hover{background:#4a7097}
+h2{font-size:clamp(23px,4vw,31px);line-height:1.2;letter-spacing:-.04em;margin:5px 0 9px}
+h3{font-size:14px;margin:17px 0 9px}
+.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.label{font-size:10px;color:var(--good);letter-spacing:.13em;font-weight:800}
+.panel{min-width:0;padding:17px}
+.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.pill{border:1px solid #5b7a98;color:#c1d7ed;border-radius:40px;font-size:10px;padding:6px 10px}
+select{width:100%;border-radius:10px;border:1px solid #6a88aa;background:#213952;color:#fff;padding:11px;font-size:13px;margin:8px 0 9px}
+.image{position:relative;background:#122335;border:1px solid #3b5066;border-radius:13px;overflow:hidden}
+.image img{width:100%;aspect-ratio:1;object-fit:contain;display:block;cursor:zoom-in}
+.imagetag{position:absolute;top:12px;left:12px;background:#0d1c2add;color:#f0f6ff;border:1px solid #657d91;border-radius:7px;font-size:10px;padding:7px 10px;pointer-events:none}
+.review{font-size:13px;line-height:1.75;color:#d3deea}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.facts div{min-width:0;padding:10px 8px;background:#22374c;border:1px solid #3e5267;border-radius:9px}
+.facts small{display:block;font-size:10px;color:var(--sub);margin-bottom:6px}
+.facts strong{display:block;font-size:11px;overflow-wrap:anywhere;line-height:1.5}
+details{border-top:1px solid var(--border);margin-top:18px;padding-top:12px}
+summary{font-size:13px;font-weight:700;color:#c8dbef;cursor:pointer;padding:6px 0}
+.pre{font:11px/1.8 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#0c1b2d;border:1px solid #39516b;padding:13px;border-radius:9px;margin-top:8px}
+.footer{padding:25px 0 35px;border-top:1px solid var(--border);font-size:12px;color:var(--sub);line-height:1.8}
+#lightbox{position:fixed;z-index:100;inset:0;background:#050a10f6;padding:12px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+#lightbox img{max-height:83vh;max-width:98vw;object-fit:contain}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+.both{font-size:11px;color:var(--sub);line-height:1.6;overflow-wrap:anywhere}
+@media(max-width:730px){.columns{grid-template-columns:1fr}.panel{padding:13px}.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{gap:22px}}
+</style></head><body>
+<header><div class="constrain"><div class="eyebrow">VISION LAB / JERRY / V3 · REAL LOCAL GENERATION</div>
+<h1>Jerry <em>开坦克</em><br>与开飞机</h1>
+<p class="lede">不用预画整张草图。让本地模型一次生成真正的完整场景，再用独立的输出版本检验质量。每一张图片都展示真实入模内容、完整文字提示词和参数。</p>
+<div class="stats"><div><strong>05</strong>实际生成 PNG</div><div><strong>00</strong>图像输入</div><div><strong>02</strong>本轮优选</div><div><strong>05</strong>原始工作流</div></div>
+</div></header>
+<main>
+<div id="gate"><h2>打开加密画廊</h2><p class="small">完整私人链接可以直接自动解锁，也可粘贴完整链接或解密密钥。</p><div class="controls"><input id="pass" placeholder="私人链接或密钥" autocomplete="off"><button class="btn" id="unlock">查看真实 PNG</button></div><p id="error"></p></div>
+<div id="content" class="hidden">
+<section class="intro"><span class="label">VERIFIED INPUT SOURCES</span><h2>本轮没有输入参考图片</h2><p class="small">五张图片全部为 ComfyUI 纯文字生成：文字提示词进入编码器，空白 latent 进入采样器。没有任何 LoadImage、IP-Adapter、VAEEncode、ControlNet 参考图节点。先前的 Jerry 网络角色图没有被送进这些生成任务，不能假称它是输入图。</p></section>
+<div class="columns">
+<section class="panel"><div class="panelhead"><div><span class="label">01 / TANK</span><h2>Jerry 开坦克</h2></div><span class="pill">无图片输入</span></div>
+<label class="small" for="tankpick">切换本轮真实输出</label><select id="tankpick"></select><div id="tankview"></div></section>
+<section class="panel"><div class="panelhead"><div><span class="label">02 / AIRPLANE</span><h2>Jerry 开飞机</h2></div><span class="pill">无图片输入</span></div>
+<label class="small" for="planepick">切换本轮真实输出</label><select id="planepick"></select><div id="planeview"></div></section>
+</div><section class="closing"><h2>怎样判断进步？</h2>
+<p class="small">坦克对比 A、B 两个种子对 Jerry 驾驶动作的影响；飞机同理。Illustrious 失败对照显示，模型画出多格分镜并不等于完成单幅插画。点击任何图片可放大并保存原始 PNG；展开参数可复制提示词、保存实际 ComfyUI JSON。</p></section>
+</div></main>
+<div id="lightbox" class="hidden" role="dialog" aria-modal="true"><img id="zoom" alt="实际生成的原始 PNG"><div class="actions"><a class="btn" id="save" download>保存原始 PNG</a><button id="close" class="btn">关闭</button></div></div>
+<footer class="footer"><div class="constrain">实验：本机 RTX 5060 Laptop GPU + ComfyUI。Jerry 属于 Warner Bros. 角色，仅用于私人非商业技术实验。GitHub Pages 只托管 AES-256-GCM 加密资产；带 #k= 的完整链接相当于解密权限。</div></footer>
+<script>
+"use strict";
+const $=s=>document.getElementById(s),E=new TextEncoder(),D=new TextDecoder();let key,db,cache=new Map(),done=false;
+function n(t,c,s){let x=document.createElement(t);if(c)x.className=c;if(s!==undefined)x.textContent=String(s);return x}
+async function getKey(v){v=String(v).trim();if(v.includes("#k="))v=v.split("#k=")[1].split("&")[0];if(!/^[\w-]{43}$/.test(v))throw Error("密钥格式不正确");
+return crypto.subtle.importKey("raw",Uint8Array.from(atob(v.replace(/-/g,"+").replace(/_/g,"/")+"="),x=>x.charCodeAt(0)),"AES-GCM",false,["decrypt"])}
+async function read(path){let r=await fetch(path,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status+": "+path);let data=new Uint8Array(await r.arrayBuffer());return crypto.subtle.decrypt({name:"AES-GCM",iv:data.slice(0,12),additionalData:E.encode(path.split("/").at(-1))},key,data.slice(12))}
+async function url(path,mime){if(!cache.has(path))cache.set(path,read(path).then(b=>URL.createObjectURL(new Blob([b],{type:mime}))).catch(e=>{cache.delete(path);throw e}));return cache.get(path)}
+function close(){ $("lightbox").classList.add("hidden");document.body.style.overflow=""}
+$("close").onclick=close;document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+async function show(a){try{let u=await url(a.png,"image/png");$("zoom").src=u;$("save").href=u;$("save").download=a.id+"_original.png";$("lightbox").classList.remove("hidden");document.body.style.overflow="hidden"}catch(e){alert(e.message)}}
+function fact(box,label,value){let x=n("div");x.append(n("small","",label),n("strong","",value));box.append(x)}
+function render(a,scene){let area=$(scene+"view");area.replaceChildren();
+let figure=n("div","image"),img=n("img");img.alt="实际本地生成："+a.title;img.onclick=()=>show(a);figure.append(img,n("div","imagetag",a.engine==="z"?"Z-IMAGE TURBO / GPU":"ILLUSTRIOUS XL / GPU"));
+area.append(figure);url(a.thumbnail,"image/webp").then(u=>img.src=u).catch(e=>img.alt="缩略图解密失败："+e.message);
+area.append(n("p","review",a.review));let values=n("div","facts");
+fact(values,"实际输入图片","0 张");
+fact(values,"生成模式","txt2img / 无底图");
+fact(values,"本地模型",a.engine==="z"?"Z-Image Turbo INT8":"Illustrious XL 1.1");
+fact(values,"分辨率",a.resolution.join(" × "));
+fact(values,"随机种子",a.seed);
+fact(values,"采样步数 / CFG",a.parameters.steps+" / "+a.parameters.cfg);
+fact(values,"采样器 / 调度",a.parameters.sampler+" / "+a.parameters.scheduler);
+fact(values,"生成时间",a.run_seconds+" 秒");
+area.append(values);
+let d=n("details");d.append(n("summary","","显示完整文字输入 + 真实工作流参数"));
+d.append(n("h3","","完整正向提示词"));
+let pre=n("pre","pre",a.positive);d.append(pre);
+let cp=n("button","btn","复制正向提示词");cp.onclick=()=>navigator.clipboard.writeText(a.positive).then(()=>cp.textContent="已复制").catch(()=>alert("请长按文本手动复制"));d.append(cp);
+d.append(n("h3","","反向输入"));
+if(a.engine==="z")d.append(n("p","small","没有反向提示词文本。工作流使用 ConditioningZeroOut 构造负条件。"));
+else d.append(n("pre","pre",a.negative));
+d.append(n("h3","","真实模型设置"));d.append(n("pre","pre",JSON.stringify({...a.parameters,seed:a.seed,input_images:a.input_images},null,2)));
+d.append(n("p","both","原始 PNG SHA-256："+a.sha256));d.append(n("p","both","工作流 SHA-256："+a.workflow_sha256));
+area.append(d);
+let buttons=n("div","actions"),b1=n("button","btn","放大 / 保存原始 PNG");b1.onclick=()=>show(a);buttons.append(b1);
+let b2=n("button","btn","下载 ComfyUI JSON");b2.onclick=async()=>{try{let u=await url(a.workflow,"application/json"),link=n("a");link.href=u;link.download=a.id+"_workflow.json";document.body.append(link);link.click();link.remove()}catch(e){alert(e.message)}};buttons.append(b2);area.append(buttons);
+}
+function setup(scene){let arr=db.records.filter(x=>x.kind===scene).sort((a,b)=>a.rank-b.rank),sel=$(scene+"pick");
+arr.forEach(x=>{let opt=n("option","",x.title);opt.value=x.id;sel.append(opt)});
+sel.value=db.preferred[scene];sel.onchange=()=>render(arr.find(x=>x.id===sel.value),scene);
+render(arr.find(x=>x.id===sel.value),scene)}
+async function unlock(v){if(done)return;$("error").textContent="正在解密数据…";
+try{key=await getKey(v);db=JSON.parse(D.decode(await read("m.bin")));if(db.records.length!==5||db.actual_input_image_count!==0)throw Error("清单不匹配");
+setup("tank");setup("plane");done=true;$("gate").classList.add("hidden");$("content").classList.remove("hidden");
+}catch(e){$("error").textContent="解密失败："+e.message}}
+$("unlock").onclick=()=>unlock($("pass").value);
+$("pass").onkeydown=e=>{if(e.key==="Enter")unlock(e.target.value)};
+let k=new URLSearchParams(location.hash.slice(1)).get("k");if(k){$("pass").value=k;unlock(k)}
+</script></body></html>
