@@ -42,7 +42,7 @@ footer{border-top:1px solid var(--border);color:#8696b2;font-size:11px;line-heig
 <header class="hero"><div class="wrap"><div class="top"><span class="brand">VISION / LAB</span><span class="chip">AES-256-GCM · 私人解锁</span></div>
 <h1>每一张作品，<br>都有迹可循。</h1>
 <p class="lead">本机 AI 图片与视频实验。用手机直观比较模型、查看画质缺陷、播放动态镜头。内容先在浏览器解密，不会把密钥交给网站服务器。</p>
-<div id="counts" class="counts hidden"></div></div></header>
+<div id="counts" class="counts hidden"></div></div><div class="wrap" style="margin-top:14px"><a id="benchmarkEntry" href="benchmark.html" style="display:inline-block;background:#344970;border:1px solid #657ab0;padding:11px 17px;border-radius:10px;color:#e8efff;text-decoration:none;font-size:13px">查看 24 张图片 + 8 段视频标准化评测 →</a></div></header>
 <main class="wrap">
 <div id="unlock" class="unlock"><label for="secret">使用你的私人链接解锁</label>
 <input id="secret" type="text" autocomplete="off" spellcheck="false" placeholder="粘贴私人解锁码或完整链接">
@@ -54,7 +54,11 @@ footer{border-top:1px solid var(--border);color:#8696b2;font-size:11px;line-heig
 <section><h2>角色实验</h2><p class="section-lead">Illustrious XL、LoRA 和参考图的真实生成对照。</p><div class="grid" id="characters"></div><div class="hint">参考图实验采用低去噪强度，画面高度相似主要由参考图约束产生，不可全部归功于 LoRA。</div></section>
 <section><h2>AI 动态镜头</h2><p class="section-lead">点击封面后解密并播放原始 MP4。保留失败样例。</p><div class="grid" id="videos"></div></section>
 <section><h2>写实场景与角色</h2><p class="section-lead">点击图片可放大查看原图。</p><div class="grid" id="others"></div></section>
-</div></main>
+</div><section id="benchmark-entry" class="wrap" style="padding:0 0 50px">
+<div style="background:#1d2a42;border:1px solid #4d6289;border-radius:14px;padding:22px">
+<h2>标准化评测 V1</h2><p>24 张角色图片与 8 段动作视频的实验结果，支持手机在线打分、筛选与导出。</p>
+<button id="openBenchmark" class="btn" style="margin:8px 0 0">打开标准化评测 →</button>
+</div></section></main>
 <div id="lightbox" class="hidden" role="dialog" aria-modal="true"><img id="large" alt="大图预览"><div class="lbcontrols"><span id="caption"></span><a id="download" download>保存原图 ↗</a><button id="close" class="btn">关闭</button></div></div>
 <footer><div class="wrap">Vision Lab · 本地生成成果 | 公网仅存储加密文件，持有解锁密钥者可查看。勿在此存放高敏感个人资料。</div></footer>
 <script>
@@ -156,6 +160,7 @@ byId("close").addEventListener("click",()=>{byId("lightbox").classList.add("hidd
 byId("lightbox").addEventListener("click",e=>{if(e.target.id==="lightbox")byId("close").click();});
 byId("unlockButton").addEventListener("click",()=>unlock(byId("secret").value));
 byId("secret").addEventListener("keydown",e=>{if(e.key==="Enter")unlock(byId("secret").value);});
+const benchLink=document.getElementById("benchmarkEntry");if(benchLink)benchLink.href="benchmark.html"+location.hash;
 const fromLink=getKeyPart();
 if(fromLink){byId("secret").value=fromLink;unlock(fromLink);}
-</script></body></html>
+</script><script>const jump=document.getElementById("openBenchmark");if(jump)jump.addEventListener("click",()=>location.href="./benchmark.html"+location.hash);</script></body></html>
