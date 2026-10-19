@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0e1420"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow,noarchive"><meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline';connect-src 'self';img-src blob: data:;object-src 'none';form-action 'none';base-uri 'none'">
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0e1420"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow,noarchive"><meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline';connect-src 'self';img-src blob: data: https://images.microcms-assets.io https://image.tensorartassets.com;;object-src 'none';form-action 'none';base-uri 'none'">
 <title>Vision Lab · V4 真正跳起来了吗？</title>
 <style>
 :root{color-scheme:dark;--bg:#0e1420;--panel:#1b2535;--ink:#eaf0fd;--sub:#aebdd5;--line:#364359;--accent:#bfd0ff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
@@ -36,15 +36,13 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:18px 0 10px}.comp
 @media(max-width:750px){.photo-four{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}}
 @media(max-width:540px){.photo-four .card img{aspect-ratio:3/4}.photo-four .body{padding:8px}
 .photo-four .body h3{font-size:12px}.photo-four .body p{font-size:10px}.photo-four .source-link{font-size:10px}}
-</style></head><body><header><div class="shell"><div class="top"><span class="mark">VISION / LAB</span><span class="pill">V4 · 跳跃姿态复现</span></div>
+.anime-credit{color:var(--sub);font-size:11px}.photo-four .card img{object-fit:contain}.photo-four .source-link{display:block;margin-top:9px}</style></head><body><header><div class="shell"><div class="top"><span class="mark">VISION / LAB</span><span class="pill">V4 · 跳跃姿态复现</span></div>
 <h1>模型终于<br>能自然跳跃吗？</h1>
 <p class="lead">真实跳跃摄影 → DWPose 自动提取骨架 → 普通 SDXL / Illustrious 专用 ControlNet A/B 实验。展示成功与失败，不掩盖人体变形。</p>
 <div class="stats"><div class="stat"><b>06</b><small>同一任务生成图</small></div><div class="stat"><b>02</b><small>ControlNet 对照</small></div><div class="stat"><b>03</b><small>参考输入</small></div></div></div></header>
 <main class="shell"><div id="gate"><strong>私人原图画廊</strong><p class="hint">请使用完整私人链接自动解锁。原图和模型结果在手机浏览器中解密。</p><input id="secret" placeholder="完整私人链接或解锁码"><button id="unlock" class="btn">解锁</button><p id="error"></p></div>
 <div id="content" class="hidden">
-<section id="onlineReferenceCompare"><h2>网络参考照片 × 一张 AI 生成图</h2>
-<p class="hint">三张网络照片放在左侧和上方，与右下角一张真实 AI 结果同屏比较。<strong>只有参考①被用于本次 DWPose 生成</strong>；参考②③只是额外动作参考，并未输入模型。点击任意图片可放大并下载来源原图。</p>
-<div class="reference-tool"><label for="aiCompareSelect">切换要对比的 AI 结果：</label><select id="aiCompareSelect"></select></div>
+<section id="onlineReferenceCompare"><h2>动漫参考作品 × 我们的一张 AI 生成图</h2><p class="hint">左侧三张是网络上真正的动漫作品：<strong>两张杏目官方立绘 + 一张社区 AI 奔跑示例</strong>。右下角是我们本机 ComfyUI 的真实结果。四张放一起，对比角色造型、服装、线条和动作表现。<strong>这些动漫图并未用于 V4 生成</strong>；真正用于骨架提取的真人照片保留在下方技术参考区。动漫参考直接加载自发布来源，不重新上传到仓库。</p><div class="reference-tool"><label for="aiCompareSelect">切换要对比的 AI 结果：</label><select id="aiCompareSelect"></select></div>
 <div class="photo-four" id="photoFour"></div></section>
 <section><h2>01 · 真实参考和两种骨架</h2><p class="hint">请先核对动作来源。真实照片作者 Jim Lamberson，Wikimedia Commons，CC BY-SA 4.0。<a href="https://commons.wikimedia.org/wiki/File:ContemporaryBalletLeap.jpg" rel="noreferrer" target="_blank">来源与许可</a></p><div id="references" class="grid references"></div></section>
 <section><h2>02 · 同一种子，模型对照</h2><p class="hint">左：普通 SDXL OpenPose；右：Illustrious 专用 OpenPose。使用同一张 DWPose 骨架、同一条跳跃提示词、相同采样参数。</p>
@@ -65,7 +63,18 @@ function node(tag,cls,txt){let a=document.createElement(tag);if(cls)a.className=
 async function full(item){try{let u=await imgUrl(item.original,item.original_mime||"image/png");byId("large").src=u;byId("label").textContent=item.title;byId("download").href=u;byId("download").download=item.id+"."+(item.original_ext||"png");byId("viewer").classList.remove("hidden");document.body.style.overflow="hidden"}catch(e){alert("原图解密失败："+e.message)}}
 function card(item){let a=node("article","card"),img=node("img");img.alt=item.title;img.loading="lazy";img.onclick=()=>full(item);a.append(img);imgUrl(item.thumb,"image/webp").then(u=>img.src=u).catch(()=>img.alt="加载失败");let b=node("div","body");b.append(node("small","",item.group==="reference"?"SOURCE / SKELETON":"GENERATED"));b.append(node("h3","",item.title));b.append(node("p","",item.note));let open=node("button","btn","查看原图");open.onclick=()=>full(item);b.append(open);a.append(b);return a}
 function compareCard(item,isAI){let a=card(item);let tag=a.querySelector(".body small");if(tag)tag.textContent=isAI?"AI GENERATED":"NETWORK REFERENCE";if(isAI){a.classList.add("is-ai");let b=a.querySelector(".body");b.insertBefore(node("small","","AI GENERATED / REAL OUTPUT"),b.firstChild);}else{let b=a.querySelector(".body");let c=node("p","",item.used_for_generation?"实际参与生成 · DWPose 输入":"仅供比较 · 未用于生成");b.insertBefore(c,b.querySelector("button"));let l=node("a","source-link","摄影： "+item.author+" · "+item.license+" · 来源");l.href=item.source_url;l.target="_blank";l.rel="noopener noreferrer";b.append(l);}return a}
-function compareDraw(){let items=manifest.items,ids=manifest.photo_comparison.reference_ids,chosen=byId("aiCompareSelect").value;let holder=byId("photoFour");holder.replaceChildren();ids.map(id=>items.find(x=>x.id===id)).filter(Boolean).forEach(x=>holder.append(compareCard(x,false)));let out=items.find(x=>x.id===chosen);if(out)holder.append(compareCard(out,true))}
+function animeRefCard(item){
+ let a=node("article","card"),img=node("img");img.alt=item.title;img.loading="eager";img.referrerPolicy="no-referrer";
+ let link=node("a");link.href=item.source;link.target="_blank";link.rel="noopener noreferrer";link.title="打开参考作品原发布页";link.append(img);a.append(link);
+ img.src=item.src;img.onerror=()=>{img.alt="图片暂时无法从原站加载，请点击查看来源"};
+ let b=node("div","body");b.append(node("small","",item.type));b.append(node("h3","",item.title));b.append(node("p","",item.desc));
+ let credit=node("p","",item.creator);credit.className="anime-credit";b.append(credit);
+ let source=node("a","source-link","查看作品原发布页 ↗");source.href=item.source;source.target="_blank";source.rel="noopener noreferrer";b.append(source);a.append(b);return a
+}
+function compareDraw(){let items=manifest.items,chosen=byId("aiCompareSelect").value,holder=byId("photoFour");holder.replaceChildren();
+ (manifest.anime_references||[]).forEach(x=>holder.append(animeRefCard(x)));
+ let out=items.find(x=>x.id===chosen);if(out)holder.append(compareCard(out,true))
+}
 function setupReferenceComparison(){let config=manifest.photo_comparison;if(!config)return;let sel=byId("aiCompareSelect");config.generation_ids.map(id=>manifest.items.find(x=>x.id===id)).filter(Boolean).forEach(i=>{let opt=node("option","",i.title);opt.value=i.id;sel.append(opt)});sel.value=config.default_generation_id;sel.onchange=compareDraw;compareDraw()}
 async function render(){setupReferenceComparison();let items=manifest.items;items.filter(x=>x.group==="reference").forEach(x=>byId("references").append(card(x)));items.filter(x=>x.group==="results").forEach(x=>byId("results").append(card(x)));items.filter(x=>x.group==="refine").forEach(x=>byId("refine").append(card(x)));
 let gen=items.find(x=>x.id==="real_xinsir_s1"),mat=items.find(x=>x.id==="real_matched_s1");const [u1,u2]=await Promise.all([imgUrl(gen.original,"image/png"),imgUrl(mat.original,"image/png")]);byId("imgGeneric").src=u1;byId("imgMatched").src=u2}
