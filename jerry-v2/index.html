@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline';img-src blob: data:;connect-src 'self';form-action 'none';base-uri 'none'">
+<title>Jerry · 纯文生图 · 本地模型实验</title>
+<style>
+:root{--paper:#f9f7f2;--ink:#202522;--muted:#656a65;--rule:#d4d8cf;--citrus:#efb54c;--mint:#d1e8d8;--red:#e48765;--blue:#326858;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-size:15px}
+a{color:inherit}button{font:inherit;cursor:pointer}
+.wrap{width:min(1140px,calc(100% - 36px));margin:auto}
+.nav{border-bottom:1px solid var(--ink);padding:17px 0;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-size:13px;letter-spacing:.14em;font-weight:900}
+.pill{border:1px solid #8aa695;border-radius:100px;padding:7px 12px;color:var(--blue);font-size:11px;font-weight:800}
+.hero{padding:46px 0 30px}
+.eyebrow{font-size:12px;letter-spacing:.21em;color:var(--blue);font-weight:900}
+h1{font-family:Georgia,"Noto Serif SC",serif;font-size:clamp(46px,9vw,100px);line-height:1.05;letter-spacing:-.055em;margin:13px 0 22px;font-weight:800}
+h1 i{font-style:normal;color:var(--blue)}
+.lead{font-size:16px;line-height:1.85;max-width:760px;color:#4e5852}
+.metrics{display:flex;flex-wrap:wrap;gap:27px;border-top:1px solid var(--rule);padding:22px 0 28px}
+.metric strong{display:block;font-size:30px;font-weight:900;letter-spacing:-.04em}
+.metric small{font-size:12px;color:var(--muted)}
+#gate{background:white;border:1px solid var(--ink);padding:23px;border-radius:12px;max-width:760px;margin:10px 0 32px}
+#gate p{line-height:1.7;color:var(--muted);font-size:13px}
+#gate .form{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+input{min-width:120px;flex:1;background:#faf9f5;border:1px solid #afb9ae;border-radius:8px;padding:12px;color:var(--ink)}
+.btn{border:1px solid var(--ink);background:var(--ink);border-radius:8px;color:#fff;text-decoration:none;padding:10px 15px;display:inline-block;font-weight:800;font-size:13px}
+.btn:hover{background:var(--blue)}
+.btn.minor{background:transparent;color:var(--ink)}
+.btn.minor:hover{background:#e6e9e2}
+.btn:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.hidden{display:none!important}
+.sectionhead{display:flex;justify-content:space-between;gap:20px;align-items:end;border-top:2px solid var(--ink);padding-top:18px;margin:32px 0 18px}
+.sectionhead h2{font-family:Georgia,"Noto Serif SC",serif;font-size:clamp(27px,4.5vw,45px);margin:0}
+.sectionhead p{color:var(--muted);font-size:12px;line-height:1.5;max-width:350px;margin:0}
+.hint{font-size:14px;line-height:1.8;color:var(--muted)}
+.tag{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:900;color:#53715f}
+.winner-grid,.comparison-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.case{border:1px solid var(--ink);border-radius:13px;background:#fff;overflow:hidden;min-width:0}
+.case.winner{box-shadow:7px 7px 0 var(--mint)}
+.case .image{width:100%;aspect-ratio:5/5.8;background:#eceadd;overflow:hidden;position:relative}
+.case .image img{width:100%;height:100%;object-fit:contain;display:block;cursor:zoom-in}
+.case .image .flag{position:absolute;left:12px;top:12px;background:#f9f7f2e9;color:#20382c;border:1px solid #274a38;padding:7px 9px;border-radius:100px;font-size:10px;font-weight:900;letter-spacing:.09em;pointer-events:none}
+.case .body{padding:17px 18px 21px}
+.case h3{font-size:23px;margin:8px 0 8px;letter-spacing:-.04em;line-height:1.3}
+.case p{line-height:1.75;font-size:12.5px;color:#646d65;margin:9px 0}
+.case .status{display:inline-block;background:#e9eee7;border-radius:5px;padding:4px 8px;color:#395748;font-size:11px;font-weight:800}
+.case .status.bad{background:#f7dfd4;color:#8c472c}
+.case .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.proof{border:1px solid var(--rule);border-radius:10px;padding:12px;margin-top:13px;background:#f8faf7}
+.proof strong{display:block;font-size:13px}
+.proof p{font-size:12px;margin:6px 0 0}
+.proof b{color:#28744e}
+.details{border-top:1px solid var(--rule);margin-top:16px;padding-top:13px}
+details summary{font-weight:800;cursor:pointer;font-size:13px;padding:5px 0}
+.detail-inner{margin-top:9px}
+.label{font-weight:900;font-size:12px;margin:18px 0 8px}
+.prompt{background:#f2f4ed;border:1px solid #d5ddd0;border-radius:9px;white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;font:12px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;color:#26392c;user-select:text}
+.params{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.param{padding:9px;background:#f5f7f2;border:1px solid #e3e8de;border-radius:7px;min-width:0}
+.param small{display:block;font-size:10px;color:#667268;margin-bottom:5px}
+.param b{font-size:11px;overflow-wrap:anywhere}
+.compare-note{background:#ecf1e9;border-radius:13px;border:1px solid #b2c4b4;padding:20px;margin:26px 0;line-height:1.85}
+.compare-note strong{font-size:18px}
+.compare-note p{font-size:13px;color:#56655b}
+#zoom{position:fixed;inset:0;background:#161c18ed;z-index:5;padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#zoom img{max-width:98vw;max-height:82vh;object-fit:contain}
+.zoomcontrols{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;color:white;font-size:12px;padding:10px}
+footer{margin-top:48px;padding:26px 0 38px;border-top:1px solid var(--rule);color:var(--muted);font-size:12px;line-height:1.85}
+@media(max-width:650px){.wrap{width:calc(100% - 28px)}.hero{padding-top:38px}.winner-grid,.comparison-grid{grid-template-columns:1fr}.case .body{padding:16px}.case .image{aspect-ratio:5/5.8}.sectionhead{align-items:start;flex-direction:column;gap:5px}.hero h1{font-size:56px}.metrics{gap:23px}.metrics strong{font-size:25px}.btn{font-size:12px}.case.winner{box-shadow:4px 4px 0 var(--mint)}}
+</style>
+</head>
+<body>
+<header class="wrap"><div class="nav"><div class="brand">VISION LAB / LOCAL</div><span class="pill">RTX 5060 · COMFYUI</span></div></header>
+<main class="wrap">
+<div class="hero">
+ <div class="eyebrow">01 / TRUE TEXT-TO-IMAGE</div>
+ <h1>Jerry <i>重新</i><br>开飞机。</h1>
+ <p class="lead">抛弃错误的贴图草稿，真正测试本地模型能否独立画出 Jerry、坦克和飞机。<strong>所有六张新图都是纯文生图，实际输入参考图片数量：0。</strong></p>
+</div>
+<div class="metrics">
+ <div class="metric"><strong>06</strong><small>本地真实 PNG</small></div>
+ <div class="metric"><strong>02</strong><small>不同本地底模</small></div>
+ <div class="metric"><strong>00</strong><small>实际输入图片</small></div>
+ <div class="metric"><strong>06</strong><small>可复现工作流</small></div>
+</div>
+<div id="gate">
+ <h2>解锁本地实验结果</h2>
+ <p>所有原始 PNG、文字输入、随机种子和工作流均经 AES-256-GCM 加密。使用完整私人链接可以自动查看。</p>
+ <div class="form"><input id="keyinput" placeholder="粘贴私人链接或密钥" autocomplete="off"><button class="btn" id="unlock">查看真实生成图</button></div>
+ <p id="error" role="status"></p>
+</div>
+<div id="openarea" class="hidden">
+ <div class="sectionhead"><h2>真正能驾驶的 Jerry</h2><p>优先展示第二组种子，点击原图可放大。每张记录后都有完整文字提示词和工作流。</p></div>
+ <div class="winner-grid" id="winners"></div>
+ <div class="compare-note">
+ <strong>这轮究竟改变了什么？</strong>
+ <p>旧方案先用 Python 把 Jerry 贴在载具上，再用 img2img 反复修补。新方案不输入任何图片，让模型直接决定动作和构图；当文字解释能力足够强时，错误的草图反而是障碍。</p>
+ <p><strong>实验范围有限：</strong>只有两个场景、两个模型和少量种子。更好的驾驶姿势不代表稳定复刻每一处经典动画细节。</p>
+ <div id="oldlink"></div>
+ </div>
+ <div class="sectionhead"><h2>全部模型对照</h2><p>同一主题比较模型；低质量输出不删除，提示词和原图可核验。</p></div>
+ <div id="others" class="comparison-grid"></div>
+</div>
+</main>
+<div id="zoom" class="hidden" role="dialog" aria-modal="true" aria-label="查看生成原始图片"><img id="zoomimg" alt="本地生成 PNG"><div class="zoomcontrols"><span id="zoomtitle"></span><a id="download" class="btn" download>保存原始 PNG</a><button id="closezoom" class="btn minor" style="background:white">关闭</button></div></div>
+<footer><div class="wrap">LOCAL / ComfyUI · Original SHA-256 verified · Z-Image Turbo INT8 vs Illustrious XL 1.1. 不将“画得相似的网上作品”伪装成实际生成输入。用户私人实验数据，分享含密钥的完整链接等同授权访问。</div></footer>
+<script>
+"use strict";
+const q=id=>document.getElementById(id), E=new TextEncoder(),D=new TextDecoder();
+let key=null,man=null,unlocked=false;const cache=new Map();
+const elem=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e};
+const qskey=()=>new URLSearchParams(location.hash.slice(1)).get("k")||"";
+async function importKey(value){
+ let s=String(value).trim();if(s.includes("#k="))s=s.split("#k=")[1].split("&")[0];
+ if(!/^[a-zA-Z0-9_-]{43}$/.test(s))throw Error("密钥长度或格式错误");
+ return crypto.subtle.importKey("raw",Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")+"="),c=>c.charCodeAt(0)),"AES-GCM",false,["decrypt"]);
+}
+async function decodeAsset(path){
+ let r=await fetch(path,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status+" "+path);
+ let b=new Uint8Array(await r.arrayBuffer());
+ return crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12),additionalData:E.encode(path.split("/").pop()),tagLength:128},key,b.slice(12));
+}
+async function url(path,mime){
+ if(!cache.has(path))cache.set(path,decodeAsset(path).then(x=>URL.createObjectURL(new Blob([x],{type:mime}))).catch(e=>{cache.delete(path);throw e}));
+ return cache.get(path);
+}
+function triggerDownload(href,filename){const a=elem("a");a.href=href;a.download=filename;document.body.append(a);a.click();a.remove()}
+async function showOriginal(s){
+ try{
+  const target=await url(s.original.path,"image/png");q("zoomimg").src=target;
+  q("zoomtitle").textContent=s.title+" · "+s.variant;
+  q("download").href=target;q("download").download=s.original.filename;
+  q("zoom").classList.remove("hidden");document.body.style.overflow="hidden";
+ }catch(e){alert("PNG 解密失败："+e.message)}
+}
+function closeZoom(){q("zoom").classList.add("hidden");document.body.style.overflow=""}
+function field(parent,name,value){const p=elem("div","param");p.append(elem("small","",name),elem("b","",value));parent.append(p)}
+function caseCard(s,isWinner){
+ const box=elem("article","case"+(isWinner?" winner":""));
+ box.id=s.id;
+ const imwrap=elem("div","image"),img=elem("img");img.alt=s.title+" "+s.engine+" 实际生成图";img.loading="lazy";img.onclick=()=>showOriginal(s);imwrap.append(img);
+ const flag=elem("div","flag",isWinner?"RECOMMENDED / BEST":"TEST / ORIGINAL");imwrap.append(flag);
+ url(s.preview.path,"image/webp").then(v=>img.src=v).catch(()=>img.alt="预览加载失败");
+ box.append(imwrap);
+ const body=elem("div","body");
+ body.append(elem("div","tag",s.engine==="z"?"Z-IMAGE TURBO / INT8":"ILLUSTRIOUS XL / 1.1"));
+ body.append(elem("h3","",s.title+" · "+s.variant));
+ body.append(elem("span","status"+(s.rating==="失败对照"?" bad":""),s.rating));
+ body.append(elem("p","",s.quality_comment));
+ const proof=elem("div","proof");
+ proof.append(elem("strong","","实际输入图片：0 张"));
+ proof.append(elem("p","","纯文字 → 噪声采样 → 模型 → PNG。没有角色照片、坦克或飞机参考图节点，也没有 Python 贴图草稿。"));
+ body.append(proof);
+ const actions=elem("div","actions"),see=elem("button","btn","查看并保存高清 PNG"),copy=elem("button","btn minor","复制正向提示词");
+ see.onclick=()=>showOriginal(s);
+ copy.onclick=()=>navigator.clipboard.writeText(s.positive_prompt).then(()=>copy.textContent="已复制").catch(()=>alert("请长按页面提示词复制"));
+ actions.append(see,copy);body.append(actions);
+ const details=elem("details","details"),summary=elem("summary","","查看全部实际输入、模型参数和可复现工作流");details.append(summary);
+ const inside=elem("div","detail-inner");
+ 
+ inside.append(elem("div","label","输入图片（实际）"));
+ inside.append(elem("p","","无。工作流验证没有 LoadImage / VAEEncode / IP-Adapter；这里只是文生图，并非隐瞒了参考照片。"));
+ inside.append(elem("div","label","实际正向文字输入（完整原文）"));
+ inside.append(elem("div","prompt",s.positive_prompt));
+ inside.append(elem("div","label","负向输入的真实情况"));
+ inside.append(elem("p","",s.negative_conditioning));
+ if(s.negative_prompt)inside.append(elem("div","prompt",s.negative_prompt));
+ const p=s.params,g=elem("div","params");
+ const f=[["底模",p.model_file],["文本编码器",p.text_encoder],["VAE",p.vae],["随机种子",p.seed],["尺寸",p.width+" × "+p.height],["步数",p.steps],["CFG",p.cfg],["采样器",p.sampler],["调度器",p.scheduler],["去噪",p.denoise],["PNG SHA-256",s.original.sha256],["工作流 SHA-256",s.workflow.sha256]];
+ for(const [name,value] of f)field(g,name,value);
+ inside.append(elem("div","label","模型与参数"),g);
+ const wb=elem("button","btn","下载真实 ComfyUI API 工作流 JSON");wb.style.marginTop="12px";
+ wb.onclick=()=>url(s.workflow.path,"application/json").then(u=>triggerDownload(u,s.workflow.filename)).catch(e=>alert("工作流下载失败："+e.message));
+ inside.append(wb);details.append(inside);body.append(details);
+ box.append(body);return box;
+}
+async function unlock(raw){
+ if(unlocked)return;q("error").textContent="验证中，正在解密 6 张真实生成图…";
+ try{
+  key=await importKey(raw);
+  man=JSON.parse(D.decode(await decodeAsset("m.bin")));
+  if(man.samples.length!==6)throw Error("实验数量异常");
+  for(const id of man.comparison.winners){const c=man.samples.find(x=>x.id===id);if(!c)throw Error("缺失样本");q("winners").append(caseCard(c,true))}
+  for(const id of man.comparison.others){const c=man.samples.find(x=>x.id===id);if(!c)throw Error("缺失对照");q("others").append(caseCard(c,false))}
+  const old=elem("a","btn minor","查看旧版贴图流程的失败样本 ↗");
+  old.href="../jerry/"+location.hash;
+  q("oldlink").append(old);
+  q("gate").classList.add("hidden");q("openarea").classList.remove("hidden");unlocked=true;
+ }catch(e){q("error").textContent="解密失败："+e.message}
+}
+q("unlock").onclick=()=>unlock(q("keyinput").value);
+q("keyinput").onkeydown=e=>{if(e.key==="Enter")unlock(e.target.value)};
+q("closezoom").onclick=closeZoom;
+document.onkeydown=e=>{if(e.key==="Escape")closeZoom()};
+let hash=qskey();if(hash){q("keyinput").value=hash;unlock(hash)}
+</script>
+</body>
+</html>
