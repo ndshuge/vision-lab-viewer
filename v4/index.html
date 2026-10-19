@@ -25,12 +25,27 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:18px 0 10px}.comp
 .hidden{display:none!important}footer{font-size:11px;line-height:1.75;border-top:1px solid var(--line);color:var(--sub);padding:26px 0 40px}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:540px){.grid{grid-template-columns:1fr}.references{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.references .body{padding:8px}.references .body h3{font-size:11px}.references .body p{display:none}.references .body .btn{padding:6px;font-size:10px}.stage{height:430px}.stage img{object-fit:cover}h1{margin-top:53px}header{padding-bottom:40px}}
+.photo-four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.photo-four .card{min-width:0}.photo-four .card img{width:100%;aspect-ratio:3/4;object-fit:contain}
+.photo-four .body{padding:10px 12px}.photo-four .body h3{font-size:14px;line-height:1.45;margin:4px 0}
+.photo-four .body p{font-size:11px;line-height:1.55}
+.photo-four .source-link{display:block;margin-top:10px;line-height:1.6;overflow-wrap:anywhere;font-size:11px;color:var(--accent);text-decoration:underline}
+.photo-four .is-ai{border-color:#88a6ea;box-shadow:0 0 0 1px #88a6ea}
+.reference-tool{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--sub);font-size:13px}
+.reference-tool select{min-width:180px;max-width:100%;background:#1b2c47;color:white;border:1px solid #7891c5;border-radius:9px;padding:10px 12px}
+@media(max-width:750px){.photo-four{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}}
+@media(max-width:540px){.photo-four .card img{aspect-ratio:3/4}.photo-four .body{padding:8px}
+.photo-four .body h3{font-size:12px}.photo-four .body p{font-size:10px}.photo-four .source-link{font-size:10px}}
 </style></head><body><header><div class="shell"><div class="top"><span class="mark">VISION / LAB</span><span class="pill">V4 · 跳跃姿态复现</span></div>
 <h1>模型终于<br>能自然跳跃吗？</h1>
 <p class="lead">真实跳跃摄影 → DWPose 自动提取骨架 → 普通 SDXL / Illustrious 专用 ControlNet A/B 实验。展示成功与失败，不掩盖人体变形。</p>
 <div class="stats"><div class="stat"><b>06</b><small>同一任务生成图</small></div><div class="stat"><b>02</b><small>ControlNet 对照</small></div><div class="stat"><b>03</b><small>参考输入</small></div></div></div></header>
 <main class="shell"><div id="gate"><strong>私人原图画廊</strong><p class="hint">请使用完整私人链接自动解锁。原图和模型结果在手机浏览器中解密。</p><input id="secret" placeholder="完整私人链接或解锁码"><button id="unlock" class="btn">解锁</button><p id="error"></p></div>
 <div id="content" class="hidden">
+<section id="onlineReferenceCompare"><h2>网络参考照片 × 一张 AI 生成图</h2>
+<p class="hint">三张网络照片放在左侧和上方，与右下角一张真实 AI 结果同屏比较。<strong>只有参考①被用于本次 DWPose 生成</strong>；参考②③只是额外动作参考，并未输入模型。点击任意图片可放大并下载来源原图。</p>
+<div class="reference-tool"><label for="aiCompareSelect">切换要对比的 AI 结果：</label><select id="aiCompareSelect"></select></div>
+<div class="photo-four" id="photoFour"></div></section>
 <section><h2>01 · 真实参考和两种骨架</h2><p class="hint">请先核对动作来源。真实照片作者 Jim Lamberson，Wikimedia Commons，CC BY-SA 4.0。<a href="https://commons.wikimedia.org/wiki/File:ContemporaryBalletLeap.jpg" rel="noreferrer" target="_blank">来源与许可</a></p><div id="references" class="grid references"></div></section>
 <section><h2>02 · 同一种子，模型对照</h2><p class="hint">左：普通 SDXL OpenPose；右：Illustrious 专用 OpenPose。使用同一张 DWPose 骨架、同一条跳跃提示词、相同采样参数。</p>
 <div class="compare"><div class="stage"><img id="imgMatched" alt="Illustrious dedicated"><img id="imgGeneric" class="above" alt="Generic SDXL"><div id="division" class="divider"></div><span id="handle" class="handle">↔</span></div>
@@ -47,9 +62,12 @@ async function setupKey(value){let k=value.trim();if(k.includes("#k="))k=k.split
 async function decrypt(name){let r=await fetch(name,{cache:"no-store"});if(!r.ok)throw Error("资源加载失败 "+r.status);let b=new Uint8Array(await r.arrayBuffer());return crypto.subtle.decrypt({name:"AES-GCM",iv:b.slice(0,12),additionalData:E.encode(name.split("/").pop()),tagLength:128},key,b.slice(12))}
 function imgUrl(name,mime){if(urls.has(name))return urls.get(name);let promise=decrypt(name).then(x=>URL.createObjectURL(new Blob([x],{type:mime}))).catch(e=>{urls.delete(name);throw e});urls.set(name,promise);return promise}
 function node(tag,cls,txt){let a=document.createElement(tag);if(cls)a.className=cls;if(txt!==undefined)a.textContent=txt;return a}
-async function full(item){try{let u=await imgUrl(item.original,"image/png");byId("large").src=u;byId("label").textContent=item.title;byId("download").href=u;byId("download").download=item.id+".png";byId("viewer").classList.remove("hidden");document.body.style.overflow="hidden"}catch(e){alert("原图解密失败："+e.message)}}
+async function full(item){try{let u=await imgUrl(item.original,item.original_mime||"image/png");byId("large").src=u;byId("label").textContent=item.title;byId("download").href=u;byId("download").download=item.id+"."+(item.original_ext||"png");byId("viewer").classList.remove("hidden");document.body.style.overflow="hidden"}catch(e){alert("原图解密失败："+e.message)}}
 function card(item){let a=node("article","card"),img=node("img");img.alt=item.title;img.loading="lazy";img.onclick=()=>full(item);a.append(img);imgUrl(item.thumb,"image/webp").then(u=>img.src=u).catch(()=>img.alt="加载失败");let b=node("div","body");b.append(node("small","",item.group==="reference"?"SOURCE / SKELETON":"GENERATED"));b.append(node("h3","",item.title));b.append(node("p","",item.note));let open=node("button","btn","查看原图");open.onclick=()=>full(item);b.append(open);a.append(b);return a}
-async function render(){let items=manifest.items;items.filter(x=>x.group==="reference").forEach(x=>byId("references").append(card(x)));items.filter(x=>x.group==="results").forEach(x=>byId("results").append(card(x)));items.filter(x=>x.group==="refine").forEach(x=>byId("refine").append(card(x)));
+function compareCard(item,isAI){let a=card(item);let tag=a.querySelector(".body small");if(tag)tag.textContent=isAI?"AI GENERATED":"NETWORK REFERENCE";if(isAI){a.classList.add("is-ai");let b=a.querySelector(".body");b.insertBefore(node("small","","AI GENERATED / REAL OUTPUT"),b.firstChild);}else{let b=a.querySelector(".body");let c=node("p","",item.used_for_generation?"实际参与生成 · DWPose 输入":"仅供比较 · 未用于生成");b.insertBefore(c,b.querySelector("button"));let l=node("a","source-link","摄影： "+item.author+" · "+item.license+" · 来源");l.href=item.source_url;l.target="_blank";l.rel="noopener noreferrer";b.append(l);}return a}
+function compareDraw(){let items=manifest.items,ids=manifest.photo_comparison.reference_ids,chosen=byId("aiCompareSelect").value;let holder=byId("photoFour");holder.replaceChildren();ids.map(id=>items.find(x=>x.id===id)).filter(Boolean).forEach(x=>holder.append(compareCard(x,false)));let out=items.find(x=>x.id===chosen);if(out)holder.append(compareCard(out,true))}
+function setupReferenceComparison(){let config=manifest.photo_comparison;if(!config)return;let sel=byId("aiCompareSelect");config.generation_ids.map(id=>manifest.items.find(x=>x.id===id)).filter(Boolean).forEach(i=>{let opt=node("option","",i.title);opt.value=i.id;sel.append(opt)});sel.value=config.default_generation_id;sel.onchange=compareDraw;compareDraw()}
+async function render(){setupReferenceComparison();let items=manifest.items;items.filter(x=>x.group==="reference").forEach(x=>byId("references").append(card(x)));items.filter(x=>x.group==="results").forEach(x=>byId("results").append(card(x)));items.filter(x=>x.group==="refine").forEach(x=>byId("refine").append(card(x)));
 let gen=items.find(x=>x.id==="real_xinsir_s1"),mat=items.find(x=>x.id==="real_matched_s1");const [u1,u2]=await Promise.all([imgUrl(gen.original,"image/png"),imgUrl(mat.original,"image/png")]);byId("imgGeneric").src=u1;byId("imgMatched").src=u2}
 async function unlock(s){byId("error").textContent="解密中…";try{key=await setupKey(s);manifest=JSON.parse(D.decode(await decrypt("m.bin")));byId("gate").classList.add("hidden");byId("content").classList.remove("hidden");await render()}catch(e){byId("error").textContent="解锁失败："+e.message}}
 byId("unlock").onclick=()=>unlock(byId("secret").value);byId("secret").onkeydown=e=>{if(e.key==="Enter")unlock(e.target.value)};byId("close").onclick=()=>{byId("viewer").classList.add("hidden");document.body.style.overflow=""};
