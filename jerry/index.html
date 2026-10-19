@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'unsafe-inline';style-src 'unsafe-inline';connect-src 'self';img-src blob: data:;object-src 'none';base-uri 'none';form-action 'none'">
+<title>Jerry · 本地图片生成溯源实验</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color-scheme:dark;--bg:#0c131e;--panel:#162333;--ink:#e9eef9;--mut:#b6c5d8;--line:#32435c;--accent:#b2caff;--soft:#1d3049;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-size:15px}a{color:var(--accent)}
+.wrap{width:min(1200px,calc(100% - 28px));margin:0 auto}
+header{background:radial-gradient(circle at 93% -16%,#355379 0,transparent 55%),linear-gradient(120deg,#1a2b42,#0c131e);border-bottom:1px solid var(--line);padding:26px 0 47px}
+.kicker{font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:#a8c2ef;font-weight:800}
+.headerline{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.version{font-size:11px;padding:7px 10px;border:1px solid #506991;border-radius:30px;color:#bcd1f2}
+h1{font-size:clamp(38px,6.5vw,71px);line-height:1.07;letter-spacing:-.055em;margin:52px 0 18px;font-weight:840}
+h1 span{color:#a7c1f4}
+.desc{color:var(--mut);max-width:780px;line-height:1.85;margin:0}
+.metrics{display:flex;flex-wrap:wrap;gap:29px;margin-top:28px}
+.metric strong{display:block;font-size:27px;letter-spacing:-.03em}.metric small{font-size:12px;color:var(--mut)}
+main{padding:26px 0 75px}
+#gate,.intro,.sample,.info{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:20px}
+#gate{max-width:660px}.gateinput{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+input{background:#101a29;color:var(--ink);border:1px solid #6a86ae;border-radius:9px;padding:11px;min-width:180px;flex:1}
+button,.btn{font:inherit;background:#2d4771;border:1px solid #5a7cad;color:white;border-radius:9px;padding:10px 13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+button:hover,.btn:hover{background:#385a89}
+button:focus-visible,a:focus-visible{outline:2px solid #c9dfff;outline-offset:2px}
+.small{color:var(--mut);font-size:12px;line-height:1.7}
+.hidden{display:none!important}
+h2{font-size:clamp(22px,4vw,32px);line-height:1.3;letter-spacing:-.03em;margin:0}
+h3{font-size:15px;margin:17px 0 8px}
+.mode{font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:#99b9ed;font-weight:800}
+.sample{margin:22px 0 33px;padding:22px}
+.sample-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.sample h2{margin-top:8px}
+.sample-note{margin:7px 0 0;color:var(--mut);font-size:13px;line-height:1.7;max-width:900px}
+.quality{padding:6px 9px;border:1px solid #64799b;border-radius:8px;color:#c0cee5;font-size:12px;white-space:nowrap}
+.pipeline{display:grid;grid-template-columns:1fr 1fr 1.28fr;gap:12px;align-items:stretch}
+.frame{background:#1b2a3e;border:1px solid #41556f;border-radius:13px;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+.frame.out{border:1px solid #8ca7d5;background:#20314a}
+.frame img{display:block;width:100%;aspect-ratio:3/4;object-fit:contain;background:#273449;cursor:zoom-in}
+.frame-body{padding:11px 12px 14px;display:flex;flex-direction:column;gap:7px;flex:1}
+.tag{font-size:10px;font-weight:800;letter-spacing:.1em;color:#afc6f1}
+.frame h4{font-size:14px;line-height:1.4;margin:0}
+.frame p{font-size:12px;line-height:1.65;color:var(--mut);margin:0;overflow-wrap:anywhere}
+.assetmeta{color:#9daec9;font-size:10px;line-height:1.5;overflow-wrap:anywhere}
+.frame button{margin-top:auto;font-size:12px;align-self:start}
+.arrowtext{font-size:12px;color:var(--mut);margin:14px 0 10px;line-height:1.7}
+.promptbox{background:#101b2b;border:1px solid #34495f;border-radius:11px;padding:12px 13px;line-height:1.8;overflow-wrap:anywhere;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#d6e5fb;font-size:12px}
+.headrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.headrow h3{margin:11px 0}
+.mini{font-size:11px;padding:6px 9px}
+details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:13px 0}summary{cursor:pointer;color:#b2c4e3}
+details .promptbox{margin-top:11px}
+.params{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.par{border:1px solid #34465f;background:#1a2839;border-radius:10px;padding:10px;min-width:0}
+.par small{display:block;color:var(--mut);font-size:11px;margin-bottom:5px}.par b{font-size:12px;font-weight:600;overflow-wrap:anywhere}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.reflink{font-size:12px}
+#lightbox{position:fixed;inset:0;background:#030710f5;z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:9px}
+#lightbox img{object-fit:contain;max-width:98vw;max-height:79vh}
+.lightbar{display:flex;gap:12px;justify-content:space-between;align-items:center;width:min(900px,100%);padding:10px 5px;font-size:12px;flex-wrap:wrap}
+.ltext{color:var(--mut);flex:1;line-height:1.6}
+footer{padding:28px 0 42px;border-top:1px solid var(--line);font-size:12px;color:var(--mut);line-height:1.8}
+.statustxt{margin-top:10px;color:#ffc4b9;font-size:12px}
+.toc{display:flex;gap:9px;flex-wrap:wrap;margin:11px 0 18px}
+@media(max-width:900px){.params{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:680px){
+ .pipeline{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .frame.out{grid-column:1/-1}
+ .frame.out img{aspect-ratio:4/3;max-height:460px}
+ .frame-body{padding:9px;gap:6px}
+ .frame h4{font-size:12px}
+ .frame p{font-size:11px}
+ .frame button{font-size:11px}
+ .params{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .sample{padding:13px;margin-bottom:17px}
+ .sample-head{gap:6px}
+ h1{margin-top:44px}
+}
+@media(max-width:360px){.pipeline{gap:6px}.frame-body{padding:7px}.params{gap:6px}}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<div class="headerline"><span class="kicker">VISION LAB / LOCAL</span><span class="version">COMFYUI · INPUT TRACE V1</span></div>
+<h1>Jerry <span>开坦克</span><br>和开飞机</h1>
+<p class="desc">不是仅展示结果图：每张本地 GPU 输出旁边都放上真正输入过的图片，并附完整正反提示词、模型参数和可下载的 ComfyUI API 工作流。失败版本同样保留。</p>
+<div class="metrics"><div class="metric"><strong>05</strong><small>真实本地生成 PNG</small></div><div class="metric"><strong>02</strong><small>每张图的实际输入图片</small></div><div class="metric"><strong>05</strong><small>可独立追溯工作流 JSON</small></div></div>
+</div>
+</header>
+<main class="wrap">
+<div id="gate" aria-live="polite">
+<h2>加密实验画廊</h2>
+<p class="small">使用完整私人链接自动解密。如果只有不带密钥的页面地址，请粘贴完整链接或者解密密钥。</p>
+<div class="gateinput"><input id="pass" aria-label="私人链接或解锁密钥" placeholder="粘贴完整私人链接或密钥" autocomplete="off"><button id="unlock">解锁图片与参数</button></div>
+<p id="error" class="statustxt"></p>
+</div>
+<div id="content" class="hidden">
+<div class="intro">
+<h2>看清每一张图的真实输入</h2>
+<p class="small">每个实验固定展示：角色参考图（IP-Adapter）→ 本机制作的构图输入图（img2img）→ ComfyUI 实际输出。上方网络参考图不是“相似图片推荐”，而是工作流确实加载的 Jerry 图；坦克／飞机本身没有额外输入网上的真实载具照片。</p>
+<div class="toc"><a href="#tank_ipadapter_s2" class="btn">坦克 · 改进版</a><a href="#plane_ipadapter_s3" class="btn">飞机 · 改进版</a><a href="#tank_ipadapter_s1" class="btn">查看全部五次实验</a></div>
+</div>
+<div id="samples"></div>
+<div class="info">
+<h2>可核对的实验边界</h2>
+<p class="small">每张图的输入从 ComfyUI API workflow 的节点 4、6 提取；完整提示词来自节点 2、3；KSampler 采样信息来自节点 9。所有图片、JSON 的原文件 SHA-256 均已核对，网页仅托管加密数据。</p>
+<p class="small">角色源图：<a href="https://tomandjerry.fandom.com/wiki/File:JerryMouse.png" rel="noopener noreferrer" target="_blank">Tom and Jerry Wiki 的 Jerry 插画</a>。角色图和衍生构图用于私人技术实验，不宣称拥有原著角色版权。加密链接的 <code>#k=</code> 部分是访问密钥，请勿随意转发。</p>
+</div>
+</div>
+</main>
+<div id="lightbox" class="hidden" role="dialog" aria-modal="true" aria-label="查看真实 PNG">
+<img id="large" alt="原始 PNG"><div class="lightbar"><div id="large-title" class="ltext"></div><a id="save" class="btn" download>保存原始 PNG</a><button id="close">关闭</button></div>
+</div>
+<footer><div class="wrap">Jerry · Local ComfyUI provenance · Illustrious XL + IP-Adapter · 运行于 RTX 5060 Laptop GPU。模型真实运行不代表生成质量已达到成品标准。</div></footer>
+<script>
+"use strict";
+const $=id=>document.getElementById(id),encoder=new TextEncoder(),decoder=new TextDecoder();
+let secret=null,manifest=null,assetCache=new Map(),opened=false;
+const create=(name,cls,value)=>{let x=document.createElement(name);if(cls)x.className=cls;if(value!==undefined)x.textContent=String(value);return x};
+const shaLabel=v=>v?String(v).slice(0,12)+"…":"";
+const hashKey=()=>new URLSearchParams(location.hash.replace(/^#/,"")).get("k")||"";
+async function importSecret(value){
+ let s=String(value).trim();
+ if(s.includes("#k="))s=s.split("#k=")[1].split("&")[0];
+ if(!/^[A-Za-z0-9_-]{43}$/.test(s))throw new Error("解锁码格式错误");
+ const bytes=Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")+"="),c=>c.charCodeAt(0));
+ return crypto.subtle.importKey("raw",bytes,"AES-GCM",false,["decrypt"]);
+}
+async function decrypt(path){
+ const response=await fetch(path,{cache:"no-store"});
+ if(!response.ok)throw new Error("资源 HTTP "+response.status+": "+path);
+ const bytes=new Uint8Array(await response.arrayBuffer());
+ return crypto.subtle.decrypt({name:"AES-GCM",iv:bytes.slice(0,12),additionalData:encoder.encode(path.split("/").at(-1)),tagLength:128},secret,bytes.slice(12));
+}
+async function assetUrl(name,mime){
+ const key=name+"|"+mime;
+ if(!assetCache.has(key)){
+  assetCache.set(key,decrypt(name).then(b=>URL.createObjectURL(new Blob([b],{type:mime}))).catch(e=>{assetCache.delete(key);throw e}));
+ }
+ return assetCache.get(key);
+}
+function selectAsset(assetID){const item=manifest.images[assetID];if(!item)throw new Error("没有该原始资产 "+assetID);return item}
+async function showOriginal(asset,title){
+ try{
+  const url=await assetUrl(asset.full,asset.mime);
+  $("large").src=url;$("large-title").textContent=title+" · SHA256 "+shaLabel(asset.sha256);
+  $("save").href=url;$("save").download=asset.filename||asset.id+".png";
+  $("lightbox").classList.remove("hidden");document.body.style.overflow="hidden";
+ }catch(e){alert("原始资源解密失败："+e.message)}
+}
+function assetCard(assetId,role,description,isOutput=false){
+ const asset=selectAsset(assetId);
+ const holder=create("article","frame"+(isOutput?" out":""));
+ const image=create("img");image.loading=isOutput?"eager":"lazy";image.alt=role;
+ image.onclick=()=>showOriginal(asset,role);
+ holder.append(image);
+ assetUrl(asset.thumb,"image/webp").then(u=>image.src=u).catch(()=>image.alt="缩略图解密失败");
+ const body=create("div","frame-body");
+ body.append(create("div","tag",isOutput?"OUTPUT · 本机实际生成":"INPUT · 实际参与生成"));
+ body.append(create("h4","",role));
+ body.append(create("p","",description));
+ body.append(create("div","assetmeta",asset.width+" × "+asset.height+" · SHA256 "+shaLabel(asset.sha256)));
+ const button=create("button","",isOutput?"查看并保存生成 PNG":"查看并保存输入 PNG");
+ button.onclick=()=>showOriginal(asset,role);body.append(button);holder.append(body);
+ return holder;
+}
+function field(parent,label,value){
+ const box=create("div","par");
+ box.append(create("small","",label),create("b","",value));parent.append(box);
+}
+function promptSection(container,heading,value,label){
+ const top=create("div","headrow");top.append(create("h3","",heading));
+ const btn=create("button","mini","复制"+label);
+ btn.onclick=()=>navigator.clipboard.writeText(value).then(()=>btn.textContent="已复制").catch(()=>alert("复制受浏览器权限限制，请长按文字复制"));
+ top.append(btn);container.append(top);
+ container.append(create("div","promptbox",value));
+}
+async function exportWorkflow(id,filename){
+ try{
+  const a=selectAsset(id);const url=await assetUrl(a.full,a.mime);let link=create("a");link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();
+ }catch(e){alert("工作流解密失败："+e.message)}
+}
+function renderSample(s){
+ const p=s.params,sec=create("section","sample");sec.id=s.id;
+ const top=create("div","sample-head");
+ const head=create("div");head.append(create("div","mode",s.scene==="tank"?"TANK / LOCAL GPU":"AIRPLANE / LOCAL GPU"));
+ head.append(create("h2","",s.scene==="tank"?"Jerry 开坦克 · "+s.variant:"Jerry 开飞机 · "+s.variant));
+ head.append(create("p","sample-note",s.note));
+ top.append(head,create("span","quality",s.rating));sec.append(top);
+ const line=create("div","pipeline");
+ s.inputs.forEach((x,i)=>line.append(assetCard(x.asset_id,"输入图 "+(i+1)+" · "+x.role,x.route+"。"+x.note,false)));
+ line.append(assetCard(s.output_id,"最终 AI 生成图 · "+s.variant,"本机 ComfyUI 保存的原始 PNG；可与上面两张输入逐项核对",true));
+ sec.append(line);
+ sec.append(create("p","arrowtext","生成链路：图片① → IP-Adapter 角色约束；图片② → VAEEncode 作为 img2img 起点；文字提示词 + 采样参数 → 输出图。"));
+ promptSection(sec,"文字输入 · 完整正向提示词（实际使用）",s.positive,"正向");
+ const d=create("details");d.append(create("summary","","文字输入 · 完整反向提示词（展开查看）"));
+ const pre=create("div","promptbox",s.negative);pre.style.marginTop="10px";d.append(pre);sec.append(d);
+ sec.append(create("h3","","真实模型、参数和证据"));
+ const grid=create("div","params");
+ for(const [label,value] of [
+  ["底模",p.checkpoint],["角色适配器",p.ipadapter],["视觉编码器",p.clip_vision],
+  ["随机种子",p.seed],["输出分辨率",p.resolution],["采样器",p.sampler],
+  ["调度器",p.scheduler],["采样步数",p.steps],["CFG",p.cfg],
+  ["img2img 去噪",p.denoise],["IP-Adapter 权重",p.ipadapter_strength],
+  ["原图 SHA-256",p.output_sha256],["构图图 SHA-256",p.composition_input_sha256],
+  ["工作流 SHA-256",p.workflow_sha256]
+ ])field(grid,label,value);
+ sec.append(grid);
+ const actions=create("div","actions"),b=create("button","","下载此图真实 ComfyUI 工作流 JSON");
+ b.onclick=()=>exportWorkflow(s.workflow_id,s.id+"_comfyui_api_workflow.json");
+ actions.append(b);sec.append(actions);
+ return sec;
+}
+async function unlock(v){
+ if(opened)return;
+ $("error").textContent="正在验证密钥和原始工作流…";
+ try{
+  secret=await importSecret(v);
+  manifest=JSON.parse(decoder.decode(await decrypt("m.bin")));
+  if(manifest.samples.length!==5)throw new Error("样本清单数量不正确");
+  // Show the two improved variants first, but preserve every original failed A/B result.
+  const order=["tank_ipadapter_s2","plane_ipadapter_s3","tank_ipadapter_s1","plane_ipadapter_s2","plane_ipadapter_s1"];
+  const all=manifest.samples;
+  const target=$("samples");
+  for(const id of order){
+   const item=all.find(s=>s.id===id);if(!item)throw new Error("缺失实验："+id);
+   target.append(renderSample(item));
+  }
+  $("gate").classList.add("hidden");$("content").classList.remove("hidden");
+  opened=true;
+ }catch(e){$("error").textContent="解锁失败："+e.message}
+}
+$("unlock").onclick=()=>unlock($("pass").value);
+$("pass").onkeydown=e=>{if(e.key==="Enter")unlock(e.target.value)};
+function closeModal(){$("lightbox").classList.add("hidden");document.body.style.overflow=""}
+$("close").onclick=closeModal;
+document.onkeydown=e=>{if(e.key==="Escape")closeModal()};
+const k=hashKey();if(k){$("pass").value=k;unlock(k)}
+</script>
+</body>
+</html>
